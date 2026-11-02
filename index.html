@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Kingdom Defense by KRUPOY | Vercel Edition</title>
+<style>
+:root{color-scheme:light;--bg:#f4f1e8;--fg:#222;--card:#fff;--ac:#2e7d5b;--bd:#d8d2c0;--bad:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#1b1f1c;--fg:#eee;--card:#262c28;--ac:#4cc38a;--bd:#3a423d;--bad:#ff7b6b}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#1b1f1c;--fg:#eee;--card:#262c28;--ac:#4cc38a;--bd:#3a423d;--bad:#ff7b6b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans Thai","Sarabun",system-ui,sans-serif;line-height:1.5}
+#app{max-width:680px;margin:0 auto;padding:10px}
+h1{font-size:18px;margin:4px 0}
+.hud{display:flex;justify-content:space-between;gap:8px;font-weight:700;margin:6px 0}
+canvas{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--bd);touch-action:manipulation}
+.tw{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:8px;padding:8px 10px}
+button.on{border-color:var(--ac);outline:2px solid var(--ac)}
+button.go{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+button:disabled{opacity:.5;cursor:default}
+.tw button{flex:1;min-width:100px;text-align:center;font-size:13px}
+#msg{min-height:24px;font-size:14px;color:var(--bad)}
+.m{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.card{background:var(--card);border-radius:12px;padding:16px;max-width:560px;width:100%;max-height:100%;overflow:auto;box-sizing:border-box}
+.card h3{margin:6px 0 10px;font-size:17px}
+.tag{font-size:12px;color:var(--ac);font-weight:700}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}
+select{font:inherit;padding:6px;border-radius:6px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);max-width:55%}
+.g{color:var(--ac);font-weight:700}.r{color:var(--bad);font-weight:700}
+.chips button{margin:3px}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:8px 0}.sc{border:1px solid var(--bd);border-radius:10px;padding:8px;text-align:center;font-size:13px;background:var(--bg)}.em{font-size:30px}.tb{border-collapse:collapse;font-size:12px}.tb td,.tb th{border:1px solid var(--bd);padding:4px;vertical-align:top}.row .opt{flex:1;margin:0}
+/* ===== Visual refresh: Forest fantasy UI ===== */
+:root{
+ --bg:#edf5e9;--fg:#18352b;--card:#fffdf6;--ac:#267653;--bd:#c8ddca;--bad:#b94742;
+ --gold:#e7ae43;--ink:#173c31;--soft:#e1efdf;
+}
+body{
+ background:
+  radial-gradient(ellipse at 8% 5%,rgba(255,255,255,.95),transparent 34%),
+  radial-gradient(ellipse at 92% 18%,rgba(202,231,199,.7),transparent 30%),
+  linear-gradient(145deg,#edf5e9,#f8f1dc 70%,#e6f0df);
+ color:var(--fg);font-family:"Noto Sans Thai","Sarabun",system-ui,sans-serif;
+}
+#app{max-width:760px;padding:clamp(12px,3vw,22px);padding-bottom:max(18px,env(safe-area-inset-bottom))}
+h1{
+ font-size:clamp(20px,4vw,27px);font-weight:900;letter-spacing:.1px;
+ color:#174b37;margin:5px 0 12px;text-shadow:0 2px 0 rgba(255,255,255,.8);
+}
+.hud{gap:9px;margin:10px 0 12px;align-items:stretch}
+.hud span{
+ flex:1;text-align:center;padding:8px 10px;border:1px solid #c8ddca;border-radius:14px;
+ background:linear-gradient(180deg,#fffef9,#eaf4e7);box-shadow:0 3px 0 #d4e4d1;
+ color:#24543e;font-size:clamp(13px,2.8vw,16px)
+}
+canvas{
+ width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;display:block;
+ border:3px solid #fff;border-radius:18px;box-shadow:0 8px 22px rgba(36,77,52,.18),0 0 0 1px #bdd5bd;
+ background:#a9d69a;touch-action:pan-y;cursor:crosshair
+}
+.tw{gap:8px;margin:12px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+button{
+ font:inherit;cursor:pointer;border:1px solid #c9ddc8;background:linear-gradient(180deg,#fffefb,#f0f6ed);
+ color:#244638;border-radius:13px;padding:10px 12px;min-height:44px;
+ box-shadow:0 3px 0 #d5e4d2;transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+ -webkit-tap-highlight-color:transparent
+}
+button:hover:not(:disabled){transform:translateY(-2px);filter:saturate(1.08);box-shadow:0 5px 0 #d5e4d2}
+button:active:not(:disabled){transform:translateY(1px);box-shadow:0 1px 0 #d5e4d2}
+button.on{border:2px solid #2c9367;outline:3px solid rgba(44,147,103,.16);background:#e2f5e7}
+button.go{background:linear-gradient(180deg,#38a66f,#23764f);color:#fff;border:1px solid #1e704a;font-weight:800;box-shadow:0 4px 0 #185b3d}
+button.go:hover:not(:disabled){box-shadow:0 6px 0 #185b3d}
+button:disabled{opacity:.48;cursor:default;filter:grayscale(.2)}
+.tw button{min-width:0;text-align:center;font-size:clamp(12px,2.5vw,14px);line-height:1.4;padding:9px 5px;min-height:62px}
+#msg{min-height:24px;font-size:14px;color:var(--bad);font-weight:700;text-align:center}
+#go,#mn{margin:4px 3px 8px}
+#go{min-width:150px}
+.m{
+ position:fixed;inset:0;background:rgba(15,42,30,.58);backdrop-filter:blur(7px);
+ display:none;align-items:center;justify-content:center;
+ padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(14px + env(safe-area-inset-bottom,0px));
+ z-index:20;animation:veilIn .2s ease
+}
+.card{
+ background:linear-gradient(155deg,#fffef9,#f1f7eb);color:#203d30;
+ border:1px solid rgba(255,255,255,.9);border-radius:22px;padding:clamp(16px,4vw,24px);
+ max-width:590px;width:100%;max-height:min(88dvh,850px);overflow:auto;
+ box-shadow:0 22px 70px rgba(7,35,22,.3);animation:cardIn .24s cubic-bezier(.2,.8,.2,1)
+}
+.card h3{margin:4px 0 12px;font-size:clamp(18px,4vw,22px);line-height:1.45;color:#18583d}
+.card p{line-height:1.7}
+.tag{display:inline-block;background:#e0f1df;color:#267653;border-radius:999px;padding:5px 11px;margin-bottom:4px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;min-height:46px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:9px;margin:8px 0}
+.row .opt{flex:1;margin:0}
+select{font:inherit;padding:9px;border-radius:10px;background:#fff;color:#244638;border:1px solid #b9d2bc;max-width:58%;min-height:42px}
+.g{color:#267653;font-weight:800}.r{color:#b94742;font-weight:800}
+.chips button{margin:4px}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:9px;margin:10px 0}
+.sc{border:1px solid #d2e2ce;border-radius:14px;padding:11px;text-align:center;font-size:13px;background:linear-gradient(180deg,#fff,#edf6e9);box-shadow:0 3px 9px rgba(34,83,49,.06)}
+.em{font-size:32px}
+.tb{border-collapse:collapse;font-size:12px;min-width:520px;background:#fff}
+.tb td,.tb th{border:1px solid #d2e2ce;padding:7px;vertical-align:top}
+#mc input{border:1px solid #b9d2bc!important;border-radius:12px!important}
+@keyframes veilIn{from{opacity:0}to{opacity:1}}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:520px){
+ #app{padding:10px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+ h1{font-size:19px;text-align:center;margin:4px 0 10px}
+ .hud{gap:6px}.hud span{padding:7px 3px;border-radius:11px;font-size:12px}
+ canvas{border-radius:13px;border-width:2px}
+ .tw{gap:6px;margin:9px 0}
+ .tw button{font-size:11px;min-height:58px;padding:7px 2px;border-radius:10px}
+ button{padding:9px 10px}
+ .m{align-items:flex-end;padding:8px 8px max(8px,env(safe-area-inset-bottom))}
+ .card{max-height:88dvh;border-radius:20px 20px 14px 14px;padding:16px 14px}
+ .row{gap:6px}.row button{padding:8px 6px}
+ .gr{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+
+.actionbar,.soundbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:7px 0}
+.actionbar button{flex:1;min-width:92px}
+#speed{background:linear-gradient(180deg,#fff4d7,#ffe6a8);border-color:#e8c36b;color:#694a12;font-weight:800}
+#speed:disabled{opacity:.45}
+.soundbar button{font-size:13px;min-height:38px;padding:7px 12px;background:rgba(255,255,255,.72)}
+@media(max-width:520px){
+ .actionbar{display:grid;grid-template-columns:1.25fr .8fr .8fr;gap:6px}
+ .actionbar button{min-width:0;padding:9px 5px;font-size:12px}
+ .soundbar button{flex:1;font-size:12px}
+}
+
+
+/* ===== Pastel game identity + Mali typography ===== */
+:root{
+ --bg:#fff4f7;--fg:#51465c;--card:#fffafd;--ac:#a77acb;--bd:#ead8ee;--bad:#d97891;
+ --gold:#f5cf8c;--ink:#655477;--soft:#f4e8f7;
+}
+html,body,button,input,select,textarea{
+ font-family:'Mali','Noto Sans Thai','Sarabun',system-ui,sans-serif!important;
+}
+body{
+ color:#594d68;
+ background:
+  radial-gradient(ellipse at 8% 8%,rgba(255,255,255,.98),transparent 34%),
+  radial-gradient(ellipse at 92% 18%,rgba(255,224,237,.8),transparent 32%),
+  radial-gradient(ellipse at 50% 100%,rgba(218,239,229,.72),transparent 42%),
+  linear-gradient(145deg,#fff3f7 0%,#f4efff 52%,#effaf2 100%);
+}
+h1{color:#8665a6;text-shadow:0 2px 0 rgba(255,255,255,.9)}
+.hud span{
+ color:#725c83;border-color:#ead8ee;
+ background:linear-gradient(180deg,#fff,#f8effb);
+ box-shadow:0 3px 0 #eadcf0;
+}
+button{
+ color:#685875;border-color:#ead8ee;
+ background:linear-gradient(180deg,#fff,#fbf2fb);
+ box-shadow:0 3px 0 #eadcf0;
+}
+button:hover:not(:disabled){box-shadow:0 5px 0 #eadcf0}
+button:active:not(:disabled){box-shadow:0 1px 0 #eadcf0}
+button.on{border-color:#bd94d8;outline-color:rgba(189,148,216,.2);background:#f3e8fb}
+button.go{
+ background:linear-gradient(180deg,#c39add,#a77acb);
+ border-color:#a77acb;color:#fff;box-shadow:0 4px 0 #8e68ae;
+}
+button.go:hover:not(:disabled){box-shadow:0 6px 0 #8e68ae}
+#speed{background:linear-gradient(180deg,#fff2ce,#ffe5b2);border-color:#f0d39a;color:#84643b}
+.soundbar button{background:linear-gradient(180deg,#fff,#f4f8ff)}
+.m{background:rgba(82,66,100,.35)}
+.card{
+ background:linear-gradient(155deg,#fffafd,#f8f1ff 58%,#f1fbf5);
+ color:#594d68;border-color:#fff;
+}
+.card h3{color:#8665a6}
+.tag{background:#f1e6fa;color:#936bb1}
+.opt{background:linear-gradient(180deg,#fff,#f9f1fc)}
+select{background:#fffafd;color:#685875;border-color:#e3d1eb}
+.g{color:#6baf91}.r{color:#d97891}
+.sc{border-color:#eadcf0;background:linear-gradient(180deg,#fff,#f4f8ff)}
+#msg{color:#d97891}
+canvas{border-color:#fff;box-shadow:0 8px 22px rgba(151,116,170,.16),0 0 0 1px #ead8ee}
+.game-credit{
+ margin:14px 0 4px;padding:10px 12px;text-align:center;
+ color:#927ca4;font-size:12px;font-weight:500;letter-spacing:.15px;
+ border-top:1px dashed #dfcce9;
+}
+.game-credit strong{color:#8765a6;font-weight:700}
+@media(max-width:520px){
+ .game-credit{font-size:11px;margin-top:10px;padding:9px 5px}
+}
+
+
+/* ===== KRUPOY animated title screen ===== */
+#m.home-screen{
+ background:linear-gradient(135deg,rgba(255,226,238,.76),rgba(255,246,222,.78),rgba(219,244,231,.78),rgba(222,232,255,.78));
+ backdrop-filter:blur(10px);
+ align-items:center;justify-content:center;
+}
+#m.home-screen .home-card{
+ position:relative;isolation:isolate;overflow:hidden;
+ max-width:620px;width:min(620px,100%);max-height:min(92dvh,900px);
+ padding:clamp(20px,5vw,34px);
+ border:2px solid rgba(255,255,255,.94);
+ border-radius:30px;
+ background:linear-gradient(145deg,#fffafd 0%,#fff8ed 38%,#f1fbf4 72%,#f2f4ff 100%);
+ box-shadow:0 25px 80px rgba(133,103,159,.24),0 7px 0 rgba(255,255,255,.65) inset;
+ text-align:center;
+}
+.home-card:before,.home-card:after{
+ content:"";position:absolute;z-index:-1;border-radius:50%;filter:blur(2px);pointer-events:none;
+ animation:homeOrb 8s ease-in-out infinite alternate;
+}
+.home-card:before{width:190px;height:190px;left:-78px;top:-72px;background:rgba(255,191,215,.35)}
+.home-card:after{width:220px;height:220px;right:-100px;bottom:-110px;background:rgba(177,220,255,.34);animation-delay:-3s}
+.home-brand{font-size:clamp(25px,6vw,39px);font-weight:800;line-height:1.3;color:#8e6bad;margin:2px 0 4px;text-shadow:0 3px 0 #fff}
+.home-subtitle{font-size:clamp(12px,2.7vw,15px);color:#8d7a9c;margin:0 0 16px}
+.home-colorbar{height:11px;border-radius:99px;margin:14px 0 20px;overflow:hidden;background:linear-gradient(90deg,#f5b8d0,#f6d9a5,#b9e3c8,#b9d4f4,#d9c2ed);background-size:220% 100%;animation:colorFlow 5s linear infinite;box-shadow:0 3px 8px rgba(159,125,176,.14)}
+.home-art{height:112px;position:relative;margin:0 auto 8px;max-width:430px}
+.home-orbit{position:absolute;left:50%;top:50%;width:100px;height:100px;border:1.5px dashed rgba(174,142,195,.45);border-radius:50%;transform:translate(-50%,-50%);animation:orbitSpin 18s linear infinite}
+.home-float{position:absolute;font-size:clamp(24px,5vw,34px);filter:drop-shadow(0 5px 4px rgba(130,105,150,.16));animation:floatHome 3.4s ease-in-out infinite}
+.home-float.f1{left:15%;top:12%;animation-delay:-.8s}.home-float.f2{right:15%;top:5%;animation-delay:-1.6s}
+.home-float.f3{left:28%;bottom:0;animation-delay:-2.1s}.home-float.f4{right:27%;bottom:0;animation-delay:-.3s}
+.home-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:57px;filter:drop-shadow(0 8px 6px rgba(133,103,159,.2));animation:coreBob 2.5s ease-in-out infinite}
+.home-description{color:#776987;font-size:14px;line-height:1.8;margin:5px 0 15px}
+.home-name-label{display:block;text-align:left;font-size:13px;font-weight:700;color:#856a9e;margin:0 auto 5px;max-width:420px}
+.home-name{width:100%;max-width:420px;box-sizing:border-box;padding:13px 15px!important;border:1.5px solid #e4cfe9!important;border-radius:15px!important;background:rgba(255,255,255,.88)!important;color:#5c4b70!important;font:inherit!important;outline:none}
+.home-name:focus{border-color:#bd94d8!important;box-shadow:0 0 0 4px rgba(189,148,216,.16)}
+.home-start{display:block;width:100%;max-width:420px;margin:14px auto 10px;min-height:52px;font-size:16px!important;letter-spacing:.2px}
+.home-tools{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:10px 0 13px}
+.home-tools button{font-size:12px;min-height:38px;padding:7px 12px}
+.home-howto{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px auto 0}
+.home-howto span{font-size:11px;color:#8d7b9d;background:rgba(255,255,255,.72);border:1px solid #eee1f0;border-radius:999px;padding:5px 10px}
+.home-credit{border-top:1px dashed #e5d6ec;padding-top:12px;margin:16px 0 0;color:#9b89a9;font-size:11px}
+.home-credit strong{color:#8666a5}
+@keyframes colorFlow{0%{background-position:0% 50%}100%{background-position:220% 50%}}
+@keyframes floatHome{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(6deg)}}
+@keyframes coreBob{0%,100%{transform:translate(-50%,-50%) translateY(0) rotate(-3deg)}50%{transform:translate(-50%,-50%) translateY(-7px) rotate(3deg)}}
+@keyframes orbitSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes homeOrb{from{transform:translate(0,0) scale(.9)}to{transform:translate(24px,18px) scale(1.12)}}
+@media(max-width:520px){
+ #m.home-screen{align-items:center;padding:10px}
+ #m.home-screen .home-card{padding:18px 15px;border-radius:24px;max-height:94dvh}
+ .home-art{height:88px}.home-core{font-size:49px}.home-orbit{width:82px;height:82px}
+ .home-description{font-size:12px;margin-bottom:12px}
+ .home-tools{gap:6px}.home-tools button{flex:1;min-width:120px}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-card:before,.home-card:after,.home-colorbar,.home-float,.home-core,.home-orbit{animation:none!important}
+}
+
+
+/* ===== Tactile button feedback: ripple, pop and pastel sparkles ===== */
+button{
+ position:relative;isolation:isolate;overflow:hidden;
+ transform-origin:center;
+}
+button.tap-pop{animation:buttonPop .28s cubic-bezier(.2,.85,.25,1)}
+button .tap-ripple{
+ position:absolute;z-index:0;pointer-events:none;border-radius:50%;
+ width:18px;height:18px;left:var(--tap-x,50%);top:var(--tap-y,50%);
+ background:radial-gradient(circle,rgba(255,255,255,.8) 0%,rgba(214,177,239,.42) 45%,rgba(255,255,255,0) 72%);
+ transform:translate(-50%,-50%) scale(.15);animation:tapRipple .55s ease-out forwards;
+}
+button .tap-spark{
+ position:absolute;z-index:2;pointer-events:none;left:var(--sx);top:var(--sy);
+ color:var(--spark-color,#c39add);font-size:var(--ss,13px);line-height:1;
+ text-shadow:0 1px 4px rgba(255,255,255,.9);
+ animation:tapSpark .62s ease-out forwards;
+}
+button.go .tap-spark{color:#fff}
+button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
+@keyframes buttonPop{
+ 0%{transform:scale(1)}
+ 38%{transform:scale(.965)}
+ 72%{transform:scale(1.025)}
+ 100%{transform:scale(1)}
+}
+@keyframes tapRipple{
+ 0%{opacity:.9;transform:translate(-50%,-50%) scale(.15)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(8)}
+}
+@keyframes tapSpark{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.35) rotate(0deg)}
+ 18%{opacity:1}
+ 100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.25) rotate(100deg)}
+}
+@media(prefers-reduced-motion:reduce){
+ button.tap-pop{animation:none}
+ button .tap-ripple,button .tap-spark{display:none}
+}
+
+
+.report-card{background:linear-gradient(145deg,#fffdfd,#f4f0ff);border:2px solid #e7d8ef;border-radius:22px;padding:22px;color:#51445f;max-width:720px;margin:0 auto;font-family:'Mali',sans-serif}
+.report-head{text-align:center;padding:8px 0 16px;border-bottom:2px dashed #dbc9e7}.report-head .badge-icon{font-size:42px}
+.report-head h2{margin:6px 0;color:#8065a0;font-size:25px}
+.report-meta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.report-chip{background:#fff;border:1px solid #eadff0;border-radius:30px;padding:7px 13px;font-size:13px}
+.report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0}
+.report-item{background:#fff;border:1px solid #eadff0;border-radius:14px;padding:12px;text-align:left}
+.report-item b{display:block;color:#8065a0;margin-bottom:4px}.report-item small{color:#82768d}
+.report-total{background:#e9f5ee;border-radius:15px;padding:14px;text-align:center;margin-top:12px}
+.report-total strong{font-size:26px;color:#54876a}.report-credit{text-align:center;font-size:12px;color:#95869e;margin-top:16px}
+.report-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.report-actions button{min-width:130px}
+@media(max-width:520px){.report-card{padding:14px}.report-grid{grid-template-columns:1fr}.report-head h2{font-size:21px}}
+
+
+/* KRUPOY Vercel edition — polished 3D chibi fantasy skin */
+:root{
+ --bg:#e8f5ff;--fg:#493d61;--card:#fffaf0;--ac:#8c5bc4;--bd:#e8c98b;
+ --gold:#f7c65d;--forest:#4b9b62;--ink:#49345e;
+}
+body{
+ background:
+  radial-gradient(ellipse at 12% 8%,rgba(255,255,255,.95),transparent 30%),
+  radial-gradient(ellipse at 88% 18%,rgba(157,220,255,.55),transparent 32%),
+  linear-gradient(160deg,#bfe8ff 0%,#e7f8e8 48%,#fff0d9 100%);
+}
+#app{max-width:1080px;padding:clamp(12px,2vw,24px)}
+h1{
+ text-align:center;font-size:clamp(23px,4vw,36px);font-weight:900;
+ color:#6f3c9e;text-shadow:0 3px 0 #fff,0 6px 14px rgba(70,50,90,.12);
+ margin:8px 0 14px;
+}
+.hud{gap:10px;flex-wrap:wrap}
+.hud span{
+ border:2px solid #fff;background:linear-gradient(180deg,#fff9e9,#ffe6ae);
+ border-radius:18px;padding:9px 14px;color:#694d36;
+ box-shadow:0 4px 0 #e7c47d,0 7px 14px rgba(94,75,48,.10);
+}
+canvas{
+ aspect-ratio:16/9;border:5px solid #fff;border-radius:24px;
+ box-shadow:0 12px 28px rgba(63,105,86,.22),0 0 0 2px #e7c47d;
+ background:linear-gradient(#8fd5f5,#bce8a5 58%,#74bd67);
+ touch-action:manipulation;
+}
+.tw{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tw button{
+ border:2px solid #fff;background:linear-gradient(180deg,#fffdf4,#ffe8b7);
+ color:#684b37;border-radius:18px;min-height:72px;
+ box-shadow:0 5px 0 #e4bf76,0 8px 16px rgba(95,72,40,.10);
+ font-weight:800;
+}
+.tw button.on{background:linear-gradient(180deg,#f4e5ff,#dfc4ff);border-color:#fff;outline:3px solid #b78be2}
+button{
+ border:2px solid #fff;border-radius:15px;
+ background:linear-gradient(180deg,#fff,#fff1cf);color:#604b69;
+ box-shadow:0 4px 0 #e6c77f,0 7px 14px rgba(90,70,50,.09);
+ font-weight:700;min-height:44px;
+}
+button.go{
+ background:linear-gradient(180deg,#bd8ae9,#8b58c3);color:#fff;
+ border-color:#fff;box-shadow:0 5px 0 #70449f;
+}
+button.on{outline:3px solid rgba(157,109,203,.24)}
+.m{background:rgba(37,54,77,.48);backdrop-filter:blur(7px)}
+.card{
+ border:3px solid #fff;border-radius:26px;
+ background:linear-gradient(155deg,#fffdf5,#f4edff 58%,#eaf9ef);
+ box-shadow:0 20px 60px rgba(49,48,77,.25);
+}
+.card h3{color:#7544a2}
+.tag{background:#f1e3ff;color:#7649a4;border-radius:99px;padding:6px 12px}
+.game-credit{font-size:12px;color:#7e6c8f;border-top:1px dashed #d6bfe8}
+.home-card{
+ background:linear-gradient(145deg,#fffdf4,#f5eaff 55%,#e9f9ed)!important;
+ border:3px solid #fff!important;border-radius:30px!important;
+ box-shadow:0 22px 70px rgba(100,75,130,.24)!important;
+}
+.home-brand{color:#7544a2;text-shadow:0 3px #fff}
+.home-core{filter:drop-shadow(0 7px 5px rgba(75,55,100,.22))}
+.report-card{border:3px solid #fff;box-shadow:0 8px 22px rgba(90,65,120,.10)}
+@media(max-width:600px){
+ #app{padding:9px}
+ .hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .hud span{padding:7px 3px;font-size:12px}
+ .tw button{font-size:11px;min-height:66px;padding:7px 3px}
+ canvas{border-radius:16px;border-width:3px}
+}
+
+</style></head><body><div id="app">
+<h1>🌍 Kingdom Defense by KRUPOY</h1>
+<div class="hud"><span id="hl">❤️ 10</span><span id="hc">🪙 60</span><span id="hw">ข้อ 1/10</span></div>
+<canvas id="cv"></canvas>
+<div class="tw" id="tw"></div>
+<div id="msg"></div>
+<div class="actionbar"><button class="go" id="go" disabled>▶ เริ่มเวฟ</button> <button id="speed" disabled>⏩ 1×</button> <button id="mn">☰ เมนู</button></div><div class="soundbar"><button id="music" aria-pressed="false">🎵 เปิดเพลง</button><button id="sound" aria-pressed="true">🔊 เอฟเฟกต์: เปิด</button></div>
+<footer class="game-credit">✦ พัฒนาโดย <strong>ครูภัทรกันย์ กิติยศ</strong> ✦</footer>
+</div>
+<div class="m" id="m"><div class="card" id="mc"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+
+// ===== Original procedural audio: background music + UI/game sound effects =====
+const AudioFX = (() => {
+ let ac=null, master=null, musicGain=null, musicTimer=null, musicOn=false, sfxOn=true, step=0;
+ const notes=[261.63,329.63,392.00,440.00,392.00,349.23,293.66,349.23];
+ const topNotes=[523.25,493.88,440.00,392.00,440.00,392.00,349.23,392.00];
+ const bassNotes=[130.81,164.81,196.00,174.61];
+ function init(){
+   if(ac) { if(ac.state==='suspended') ac.resume(); return true; }
+   const Ctx=window.AudioContext||window.webkitAudioContext;
+   if(!Ctx) return false;
+   ac=new Ctx(); master=ac.createGain(); master.gain.value=.72; master.connect(ac.destination);
+   musicGain=ac.createGain(); musicGain.gain.value=0; musicGain.connect(master);
+   return true;
+ }
+ function tone(freq,duration=.12,type='sine',volume=.12,when=0,dest=master){
+   if(!ac||!dest)return;
+   const t=ac.currentTime+when, osc=ac.createOscillator(), gain=ac.createGain();
+   osc.type=type;osc.frequency.setValueAtTime(freq,t);
+   gain.gain.setValueAtTime(.0001,t);
+   gain.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),t+.015);
+   gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+   osc.connect(gain);gain.connect(dest);osc.start(t);osc.stop(t+duration+.03);
+ }
+ function startMusic(){
+   if(!init())return false;
+   musicOn=true; musicGain.gain.cancelScheduledValues(ac.currentTime);
+   musicGain.gain.setTargetAtTime(.25,ac.currentTime,.35);
+   if(musicTimer)clearInterval(musicTimer);
+   step=0;
+   const playBar=()=>{
+     if(!musicOn||!ac)return;
+     const i=step%notes.length,n=notes[i];
+     tone(n,.48,'sine',.062,0,musicGain);
+     tone(n*1.5,.34,'triangle',.024,.035,musicGain);
+     tone(topNotes[i],.28,'sine',.026,.12,musicGain);
+     if(step%2===0)tone(bassNotes[(step/2)%bassNotes.length],.62,'triangle',.038,0,musicGain);
+     if(step%4===0)tone(n/2,.72,'sine',.032,.02,musicGain);
+     step++;
+   };
+   playBar();musicTimer=setInterval(playBar,520);
+   return true;
+ }
+ function stopMusic(){
+   musicOn=false;
+   if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
+   if(ac&&musicGain)musicGain.gain.setTargetAtTime(.0001,ac.currentTime,.12);
+ }
+ function toggleMusic(){
+   if(musicOn){stopMusic();return false;}
+   return startMusic();
+ }
+ function click(){if(sfxOn&&init())tone(660,.055,'triangle',.07);}
+ function success(){if(sfxOn&&init()){tone(523,.1,'sine',.09);tone(659,.12,'sine',.09,.09);tone(784,.18,'sine',.1,.19);}}
+ function error(){if(sfxOn&&init()){tone(220,.16,'sawtooth',.055);tone(165,.2,'sawtooth',.045,.12);}}
+ function wave(){if(sfxOn&&init()){tone(392,.12,'triangle',.07);tone(523,.16,'triangle',.08,.12);}}
+ function toggleSfx(){sfxOn=!sfxOn;return sfxOn;}
+ return {init,toggleMusic,toggleSfx,click,success,error,wave,get musicOn(){return musicOn},get sfxOn(){return sfxOn}};
+})();
+
+const $=s=>document.querySelector(s),sh=a=>[...a].sort(()=>Math.random()-.5);
+let Q;const Fq=[
+{t:'assign',q:'ฟังไจแต่ละชนิดสร้างสปอร์จากการสืบพันธุ์แบบอาศัยเพศอย่างไร? จับคู่ให้ถูก',i:['ราขนมปัง (Rhizopus)','ยีสต์','เห็ดฟาง','ราเพนิซิลเลียม'],o:['ไซโกสปอร์','แอสโคสปอร์','เบสิดิโอสปอร์'],a:[0,1,2,1],ex:'ราขนมปัง→ไซโกสปอร์, ยีสต์และเพนิซิลเลียม→แอสโคสปอร์, เห็ด→เบสิดิโอสปอร์'},
+{t:'mc',q:'ผนังเซลล์ของฟังไจประกอบด้วยสารใดเป็นหลัก?',o:['เซลลูโลส','ไคติน','เพปทิโดไกลแคน','ลิพิด'],a:1,ex:'ฟังไจมีผนังเซลล์ไคติน ต่างจากพืชที่เป็นเซลลูโลสและแบคทีเรียที่เป็นเพปทิโดไกลแคน'},
+{t:'assign',q:'จำแนกลักษณะต่อไปนี้ว่าเป็นของฟังไจหรือพืช',i:['ผนังเซลล์ไคติน','สร้างอาหารเองได้','ผู้ย่อยสลาย','ผนังเซลล์เซลลูโลส'],o:['ฟังไจ','พืช'],a:[0,1,0,1],ex:'ฟังไจเป็นผู้ย่อยสลายหรือปรสิต ไม่สังเคราะห์ด้วยแสง ส่วนพืชเป็นผู้ผลิต'},
+{t:'mc',q:'ข้อใดกล่าวถูกต้องเกี่ยวกับฟังไจ?',o:['สังเคราะห์ด้วยแสงได้','มีเนื้อเยื่อและเอมบริโอ','ดูดซึมสารอาหารด้วยเส้นใย','เป็นโพรแคริโอต'],a:2,ex:'ฟังไจเป็นยูแคริโอต ไม่สังเคราะห์ด้วยแสง และดูดซึมอาหารผ่านเส้นใย (ไฮฟา)'},
+{t:'mc',q:'ข้อใดไม่ใช่ฟังไจ?',o:['ยีสต์','เห็ด','ราขนมปัง','สาหร่ายสีเขียว'],a:3,ex:'สาหร่ายสีเขียวสังเคราะห์ด้วยแสงได้ จัดอยู่ในโพรทิสต์หรือพืชตามเกณฑ์การจำแนก'},
+{t:'mc',q:'ไลเคนคือการอยู่ร่วมกันของสิ่งมีชีวิตคู่ใด?',o:['ฟังไจกับรากพืช','ฟังไจกับไซยาโนแบคทีเรียหรือสาหร่าย','แบคทีเรียกับสาหร่าย','ฟังไจกับสัตว์'],a:1,ex:'ฟังไจให้ที่อยู่และความชื้น ส่วนสาหร่ายหรือไซยาโนแบคทีเรียสังเคราะห์ด้วยแสงให้อาหาร'},
+{t:'mc',q:'ไมคอร์ไรซาคือการอยู่ร่วมกันของฟังไจกับรากพืช ฟังไจได้ประโยชน์/ให้ประโยชน์อย่างไร?',o:['ฟังไจช่วยพืชดูดน้ำและแร่ธาตุ พืชให้อาหารแก่ฟังไจ','ฟังไจสังเคราะห์แสงให้พืช','ฟังไจกินพืชจนตาย','ไม่มีใครได้ประโยชน์'],a:0,ex:'เป็นภาวะพึ่งพาอาศัยกัน ทั้งสองฝ่ายได้ประโยชน์'},
+{t:'mc',q:'การเขียนชื่อวิทยาศาสตร์ของยีสต์ข้อใดถูกหลักสากล?',o:['<i>Saccharomyces cerevisiae</i>','<i>saccharomyces Cerevisiae</i>','Saccharomyces Cerevisiae (ตัวตรง)','<i>SACCHAROMYCES CEREVISIAE</i>'],a:0,ex:'ชื่อสกุลขึ้นต้นด้วยตัวพิมพ์ใหญ่ ชื่อชนิดเป็นตัวพิมพ์เล็กทั้งหมด และพิมพ์ตัวเอียง'},
+{t:'order',q:'เรียงลำดับหน่วยอนุกรมวิธานของลินเนียสจากใหญ่ไปเล็ก',i:['Kingdom','Phylum','Class','Order','Family','Genus','Species'],ex:'ใหญ่→เล็ก: Kingdom, Phylum, Class, Order, Family, Genus, Species'},
+{t:'assign',q:'👑 บอส! จำแนกฟังไจเข้ากลุ่มให้ถูกทุกข้อ',i:['ราขนมปัง','ยีสต์','เห็ดฟาง','เห็ดหูหนู','ราเพนิซิลเลียม','ฟังไจที่มีสปอร์ว่ายน้ำด้วยแฟลเจลลัม'],o:['ไคทริด','ซิกโกไมโคต (ไซโกสปอร์)','แอสโคไมโคต (แอสโคสปอร์)','เบสิดิโอไมโคต (เบสิดิโอสปอร์)'],a:[1,2,3,3,2,0],ex:'ไคทริดมีสปอร์ที่มีแฟลเจลลัม ส่วนอีก 3 กลุ่มจำแนกตามสปอร์จากการสืบพันธุ์แบบอาศัยเพศ'}];
+const STORAGE_KEY='krupoy_kingdom_defense_v1';
+function readSaved(){
+ try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return {}}
+}
+const SAVED=readSaved();
+const isB=w=>[2,4,6,9].includes(w);let K=0;
+const BEST=Object.assign({},SAVED.best||{});
+const A=(q,i,o,a,ex)=>({t:'assign',q,i,o,a,ex}),M=(q,o,a,ex)=>({t:'mc',q,o,a,ex}),O=(q,i,ex)=>({t:'order',q,i,ex});
+Fq[2]=A('จำแนกลักษณะเป็นฟังไจ พืช หรือโพรทิสต์',['ผนังเซลล์ไคติน','ผนังเซลลูโลสและมีเอมบริโอ','ไม่มีเอมบริโอ ไม่มีผนังไคติน','ดูดซึมอาหารด้วยเส้นใย','ราเมือกกินแบคทีเรียโดยฟาโกไซโทซิส','ผู้ผลิตที่มีท่อลำเลียงบางกลุ่ม'],['ฟังไจ','พืช','โพรทิสต์'],[0,1,2,0,2,1],'ฟังไจ: ไคติน/เส้นใย, พืช: เซลลูโลส+เอมบริโอ, โพรทิสต์: ไม่มีเอมบริโอและไม่มีผนังไคติน');
+Fq[4]=A('จับคู่บทบาทของฟังไจ',['ไลเคน','ไมคอร์ไรซา','เห็ดบนซากไม้ผุ','ราที่ก่อโรคกลากบนผิวหนัง'],['อยู่ร่วมกับสาหร่าย/ไซยาโนแบคทีเรีย','อยู่ร่วมกับรากพืช','ผู้ย่อยสลาย','ปรสิต'],[0,1,2,3],'ไลเคน=ฟังไจ+สาหร่าย/ไซยาโนฯ, ไมคอร์ไรซา=ฟังไจ+รากพืช');
+Fq[6]=A('ชื่อวิทยาศาสตร์ใดเขียนถูกหลัก?',['<i>Rhizopus stolonifer</i>','<i>penicillium Notatum</i>','<i>Agaricus bisporus</i>','<i>Candida Albicans</i>','Saccharomyces cerevisiae (ตัวตรง)'],['ถูกหลัก','ผิดหลัก'],[0,1,0,1,1],'สกุลตัวใหญ่ ชนิดตัวเล็ก และพิมพ์ตัวเอียง');
+const Mq=[M('ข้อใดเป็นลักษณะของโพรแคริโอต?',['ไม่มีเยื่อหุ้มนิวเคลียส','มีไมโทคอนเดรีย','มีเอมบริโอ','ผนังเซลล์เป็นไคติน'],0,'โพรแคริโอตไม่มีเยื่อหุ้มนิวเคลียส'),
+A('จับคู่ชนิดผนังเซลล์',['แบคทีเรีย','พืช','ฟังไจ','ไมโคพลาสมา'],['เพปทิโดไกลแคน','เซลลูโลส','ไคติน','ไม่มีผนังเซลล์'],[0,1,2,3],'ไมโคพลาสมาเป็นแบคทีเรียที่ไม่มีผนังเซลล์'),
+A('จับคู่แบคทีเรียกับบทบาท',['ไซยาโนแบคทีเรีย','Streptomyces','Lactobacillus','ไรโซเบียม','E. coli'],['สังเคราะห์ด้วยแสง','ผลิตยาปฏิชีวนะ','ผลิตกรดแลกติก','ตรึงไนโตรเจน','อาศัยในลำไส้'],[0,1,2,3,4],'จำบทบาทของแบคทีเรียแต่ละกลุ่ม'),
+M('การย้อมแกรมแยกแบคทีเรียโดยอาศัยความต่างของอะไร?',['ผนังเซลล์','นิวเคลียส','จำนวนไรโบโซม','แฟลเจลลัม'],0,'ผนังเซลล์ต่างกัน ติดสีต่างกัน'),
+A('จัดลักษณะเป็นแบคทีเรีย อาร์เคีย หรือยูแคริโอต',['มีเยื่อหุ้มนิวเคลียส','ผนังเพปทิโดไกลแคน','อยู่ในที่เค็มจัดหรือร้อนจัด','ออร์แกเนลล์มีเยื่อหุ้มหลายชนิด'],['แบคทีเรีย','อาร์เคีย','ยูแคริโอต'],[2,0,1,2],'อาร์เคียอยู่ในสภาพแวดล้อมสุดขั้ว'),
+M('สิ่งมีชีวิตใดทำให้ออกซิเจนในบรรยากาศยุคแรกเพิ่มขึ้น?',['ไซยาโนแบคทีเรีย','ไวรัส','ฟังไจ','อะมีบา'],0,'ไซยาโนแบคทีเรียสังเคราะห์ด้วยแสง'),
+A('จับคู่อาร์เคียกับแหล่งที่อยู่',['ทะเลสาบเค็มจัด','น้ำพุร้อน','ลำไส้วัวและปลวก'],['ชอบเกลือจัด','ชอบอุณหภูมิสูง','สร้างแก๊สมีเทน'],[0,1,2],'อาร์เคียดำรงชีวิตในสภาพสุดขั้ว'),
+M('แบคทีเรียกลุ่มใดไม่มีผนังเซลล์?',['ไมโคพลาสมา','ไซยาโนแบคทีเรีย','Lactobacillus','Streptomyces'],0,'ไมโคพลาสมาไม่มีผนังเซลล์'),
+M('ไวรัสต่างจากแบคทีเรียอย่างไร?',['ไม่เป็นเซลล์ ต้องใช้เซลล์โฮสต์เพิ่มจำนวน','มีไรโบโซมเอง','สร้างอาหารเองได้','มีผนังเซลล์'],0,'ไวรัสเป็นปรสิตภายในเซลล์โฮสต์'),
+A('จัดลักษณะเป็นแบคทีเรีย อาร์เคีย หรือไวรัส',['มี capsid ห่อสารพันธุกรรม','ผนังเพปทิโดไกลแคน','สร้างแก๊สมีเทน','ปรสิตภายในเซลล์โฮสต์เท่านั้น','ไซยาโนแบคทีเรีย','ชอบเกลือจัด'],['แบคทีเรีย','อาร์เคีย','ไวรัส'],[2,0,1,2,0,1],'ไวรัสไม่เป็นเซลล์')];
+const Pq=[M('โพรทิสต์ต่างจากพืชและสัตว์อย่างไร?',['ไม่มีระยะเอมบริโอ','เป็นโพรแคริโอต','ผนังเซลล์ไคติน','ไม่มีนิวเคลียส'],0,'โพรทิสต์ไม่มีระยะเอมบริโอ'),
+M('โพรทิสต์จำแนกเป็นกี่กลุ่ม?',['โพรโทซัว สาหร่าย และคล้ายรา','พืช สัตว์ ฟังไจ','แบคทีเรีย อาร์เคีย','โพรโทซัว และไวรัส'],0,'3 กลุ่ม: โพรโทซัว สาหร่าย โพรทิสต์คล้ายรา'),
+A('จัดโพรทิสต์เข้ากลุ่ม',['อะมีบา','ไดอะตอม','ราเมือก','พารามีเซียม','เคลป์','ไดโนแฟลเจลเลต'],['โพรโทซัว','สาหร่าย','คล้ายรา'],[0,1,2,0,1,1],'โพรโทซัวคล้ายสัตว์ สาหร่ายสังเคราะห์แสง'),
+M('ทำไมยูกลีนาจึงถูกจัดไว้ทั้ง 2 กลุ่ม?',['สังเคราะห์แสงได้และกินอาหารได้','ไม่มีนิวเคลียส','เป็นฟังไจ','ไม่มีเซลล์'],0,'ยูกลีนาได้ทั้งสองแบบ'),
+A('จับคู่ลักษณะกับกลุ่มโพรทิสต์',['คล้ายสัตว์ เคลื่อนที่ได้','สังเคราะห์แสงด้วยคลอโรฟิลล์','สร้างโครงสร้างคล้าย fruiting body','เคยถูกจัดเป็นฟังไจ'],['โพรโทซัว','สาหร่าย','คล้ายรา'],[0,1,2,2],'ราเมือกเคยถูกจัดเป็นฟังไจ'),
+M('ราเมือกกินอาหารอย่างไร?',['กินแบคทีเรียโดยฟาโกไซโทซิส','สังเคราะห์แสง','ดูดซึมผ่านเส้นใยผนังไคติน','ไม่กินอาหาร'],0,'กินสิ่งมีชีวิตเล็กโดยฟาโกไซโทซิส'),
+A('ผู้ผลิตหรือผู้บริโภค?',['สาหร่ายสีแดง','อะมีบา','ยูกลีนา','ราเมือก','ไดอะตอม'],['ผู้ผลิต','ผู้บริโภค','ได้ทั้งสอง'],[0,1,2,1,0],'ยูกลีนาได้ทั้งสองแบบ'),
+M('ข้อใดไม่ใช่โพรทิสต์?',['ยีสต์','ไดอะตอม','อะมีบา','พารามีเซียม'],0,'ยีสต์เป็นฟังไจ'),
+M('โพรทิสต์ต่างจากฟังไจอย่างไร?',['ผนังเซลล์ไม่ใช่ไคติน','เป็นโพรแคริโอต','มีเอมบริโอ','ไม่มีนิวเคลียส'],0,'ฟังไจมีผนังไคติน'),
+O('บอส! เรียงขั้นตอนกำเนิดโปรโทเซลล์',['สังเคราะห์สารอินทรีย์โมเลกุลเล็ก','เชื่อมเป็นโมเลกุลใหญ่','ห่อหุ้มเป็นโปรโทเซลล์','เกิดโมเลกุลจำลองตัวเองได้'],'เล็ก → ใหญ่ → ห่อหุ้ม → จำลองตัวเอง')];
+const Lq=[M('ลักษณะร่วมของพืชคือข้อใด?',['มีระยะเอมบริโอ','ไม่มีนิวเคลียส','ผนังไคติน','เป็นผู้บริโภค'],0,'พืชมีเอมบริโอ ผนังเซลลูโลส และเป็นผู้ผลิต'),
+A('จับคู่พืชกับกลุ่ม',['มอส','เฟิร์น','ปรง','ข้าว'],['ไบรโอไฟต์','เฟิร์น','เมล็ดเปลือย','พืชดอก'],[0,1,2,3],'จำ 4 กลุ่มหลัก'),
+A('จับคู่ลักษณะกับกลุ่มพืช',['ไม่มีท่อลำเลียง','ออวุลไม่มีรังไข่หุ้ม','มีท่อลำเลียง ไม่มีเมล็ด','มีผลห่อหุ้มเมล็ด','แกมีโทไฟต์เป็นระยะเด่น','ไม่มีผล'],['ไบรโอไฟต์','เฟิร์น','เมล็ดเปลือย','พืชดอก'],[0,2,1,3,0,2],'ไบรโอไฟต์ไม่มีท่อลำเลียง'),
+M('ระยะเด่นของไบรโอไฟต์คือ?',['แกมีโทไฟต์','สปอโรไฟต์','ไซโกต','เมล็ด'],0,'ไบรโอไฟต์มีแกมีโทไฟต์เด่น'),
+A('จับคู่ตัวอย่างพืชกับกลุ่ม',['ลิเวอร์เวิร์ต','เฟิร์นใบมะขาม','เหลียง','มะเมื่อย','ถั่ว','ฮอร์นเวิร์ต'],['ไบรโอไฟต์','เฟิร์น','เมล็ดเปลือย','พืชดอก'],[0,1,2,2,3,0],'เหลียงและมะเมื่อยเป็นเมล็ดเปลือย'),
+M('เมล็ดเปลือยต่างจากพืชดอกอย่างไร?',['ออวุลไม่มีรังไข่ห่อหุ้ม จึงไม่มีผล','ไม่มีท่อลำเลียง','ไม่สร้างเมล็ด','มีดอกจริง'],0,'ไม่มีรังไข่ จึงไม่มีผล'),
+A('จริงหรือเท็จ?',['ไบรโอไฟต์มีท่อลำเลียง','เฟิร์นสร้างเมล็ด','เมล็ดเปลือยไม่มีผล','พืชดอกมีออวุลในรังไข่','สปอโรไฟต์เป็นระยะเด่นของพืชมีท่อลำเลียง'],['จริง','เท็จ'],[1,1,0,0,0],'ไบรโอไฟต์ไม่มีท่อลำเลียง เฟิร์นไม่สร้างเมล็ด'),
+M('กลุ่มพืชที่สร้างออวุลและเมล็ดเรียกว่า?',['Spermatophyte','Bryophyte','เฟิร์น','สาหร่าย'],0,'Spermatophyte = พืชมีเมล็ด'),
+O('เรียงกลุ่มพืชตามลำดับวิวัฒนาการ',['ไบรโอไฟต์','เฟิร์น','เมล็ดเปลือย','พืชดอก'],'ไบรโอไฟต์ → เฟิร์น → เมล็ดเปลือย → พืชดอก'),
+A('จัดพืชเข้ากลุ่ม',['สน','บัว','ข้าวโพด','ตะไคร่น้ำ','เฟิร์นนางรำ','ปรง'],['ไบรโอไฟต์','เฟิร์น','เมล็ดเปลือย','พืชดอก'],[2,3,3,0,1,2],'ตะไคร่น้ำเป็นไบรโอไฟต์')];
+const Aq=[M('สัตว์ดำรงชีวิตแบบใด?',['ผู้บริโภค','ผู้ผลิต','ผู้ย่อยสลายอย่างเดียว','สังเคราะห์แสง'],0,'สัตว์เป็นผู้บริโภค'),
+M('เซลล์สัตว์ไม่มีสิ่งใด?',['ผนังเซลล์','นิวเคลียส','เยื่อหุ้มเซลล์','ไมโทคอนเดรีย'],0,'สัตว์ไม่มีผนังเซลล์'),
+A('จับคู่โพรงลำตัว',['พยาธิตัวตืด','หนอนตัวกลม','ไส้เดือนดิน','หอยทาก','พลานาเรีย'],['ไม่มีโพรงลำตัว','โพรงลำตัวเทียม','โพรงลำตัวแท้'],[0,1,2,2,0],'หนอนตัวแบนไม่มีโพรงลำตัว หนอนตัวกลมโพรงเทียม'),
+M('ไนดาเรียนมีรูปร่าง 2 แบบ คือ?',['polyp และ medusa','ทรงกลมและแท่ง','larva และ pupa','radial และ bilateral'],0,'polyp และ medusa'),
+A('จับคู่ลักษณะกับไฟลัม',['เนื้อเยื่อ 2 ชั้น สมมาตรรัศมี','ไม่มีโพรงลำตัว ทางเดินอาหารไม่สมบูรณ์','โพรงลำตัวเทียม ไม่มีระบบหายใจ','เลือดไหลเวียนระบบปิด มีปลิง','โพรงลำตัวแท้ มีปมประสาทขนาดใหญ่'],['ไนดาเรียน','หนอนตัวแบน','หนอนตัวกลม','แอนเนลิด','มอลลัสก์'],[0,1,2,3,4],'จำลักษณะเด่นของแต่ละไฟลัม'),
+M('คอร์เดตมีลักษณะเฉพาะในระยะเอมบริโอคือ?',['โนโทคอร์ด','เปลือกแข็ง','ขาเป็นปล้อง','เทนตาเคิล'],0,'มีโนโทคอร์ด'),
+A('จับคู่สัตว์มีกระดูกสันหลังกับกลุ่ม',['ฉลาม','เขียดงู','จระเข้','นกกระจอก','โลมา'],['ปลา','ครึ่งบกครึ่งน้ำ','เลื้อยคลาน','สัตว์ปีก','เลี้ยงลูกด้วยนม'],[0,1,2,3,4],'โลมาเป็นสัตว์เลี้ยงลูกด้วยนม ฉลามเป็นปลา'),
+M('โลมากับฉลามเหมือนกันอย่างไร?',['มีโนโทคอร์ดและกระดูกสันหลัง จัดในไฟลัม Chordata','เป็นปลาทั้งคู่','เลี้ยงลูกด้วยนมทั้งคู่','ไม่มีกระดูกสันหลัง'],0,'ทั้งคู่อยู่ไฟลัม Chordata'),
+M('แมลงมีขาเดินกี่ขา?',['6','4','8','10'],0,'แมลงมี 6 ขา'),
+A('จัดสัตว์เข้าไฟลัม',['ปลาดาว','ปู','ปลิง','ปลาหมึก','พยาธิตัวตืด','แมงกะพรุน'],['ไนดาเรียน','หนอนตัวแบน','มอลลัสก์','แอนเนลิด','อาร์โทรพอด','เอไคโนเดิร์ม'],[5,4,3,2,1,0],'แต่ละไฟลัมมีลักษณะเฉพาะ')];
+const KD=[
+{k:'Monera',e:'🦠',n:'Monera แบคทีเรีย/อาร์เคีย',q:Mq,tw:[['🧫','แบคทีเรีย'],['☀️','ไซยาโนฯ (ชะลอ)'],['🔥','อาร์เคีย (แรง)']],sum:[['🔬','โพรแคริโอต','ไม่มีเยื่อหุ้มนิวเคลียส'],['🧱','ผนังเซลล์','แบคทีเรียมีเพปทิโดไกลแคน'],['🎨','ย้อมแกรม','บวก/ลบ ตามผนังเซลล์'],['☀️','ไซยาโนแบคทีเรีย','สังเคราะห์แสง ทำให้ O₂ เพิ่ม'],['🔥','อาร์เคีย','เค็มจัด ร้อนจัด สร้างมีเทน'],['🦠','ไวรัส','ไม่ใช่เซลล์ ปรสิตในโฮสต์']]},
+{k:'Protista',e:'🐾',n:'Protista โพรทิสต์',q:Pq,tw:[['🐾','อะมีบา'],['🌊','สาหร่าย (ชะลอ)'],['🍂','ราเมือก (แรง)']],sum:[['🌿','ลักษณะร่วม','ไม่มีเอมบริโอ ไม่มีผนังไคติน'],['🐾','โพรโทซัว','อะมีบา พารามีเซียม'],['🌊','สาหร่าย','ไดอะตอม เคลป์ สังเคราะห์แสง'],['🍂','คล้ายรา','ราเมือก เคยจัดเป็นฟังไจ'],['🔀','ยูกลีนา','จัดได้ทั้ง 2 กลุ่ม']]},
+{k:'Fungi',e:'🍄',n:'Fungi ฟังไจ',q:Fq,tw:[['🍄','เห็ด'],['🍞','ราขนมปัง (ชะลอ)'],['🧫','ยีสต์ (แรง)']],sum:[['🧱','ผนังเซลล์','ไคติน'],['🍽️','ดำรงชีวิต','ย่อยสลาย/ปรสิต ดูดซึมด้วยเส้นใย'],['💧','ไคทริด','สปอร์มีแฟลเจลลัม'],['🍞','ไซโกสปอร์','ราขนมปัง'],['🧫','แอสโคสปอร์','ยีสต์ เพนิซิลเลียม'],['🍄','เบสิดิโอสปอร์','เห็ด'],['🤝','อยู่ร่วมกัน','ไลเคน / ไมคอร์ไรซา']]},
+{k:'Plantae',e:'🌿',n:'Plantae พืช',q:Lq,tw:[['🌿','เฟิร์น'],['🍃','มอส (ชะลอ)'],['🌸','พืชดอก (แรง)']],sum:[['🧬','ลักษณะร่วม','เอมบริโอ เซลลูโลส ผู้ผลิต'],['🍃','ไบรโอไฟต์','ไม่มีท่อลำเลียง แกมีโทไฟต์เด่น'],['🌿','เฟิร์น','มีท่อลำเลียง ไม่มีเมล็ด'],['🌲','เมล็ดเปลือย','ไม่มีรังไข่ ไม่มีผล'],['🌸','พืชดอก','ออวุลในรังไข่ มีผล']]},
+{k:'Animalia',e:'🐬',n:'Animalia สัตว์',q:Aq,tw:[['🐙','มอลลัสก์'],['🪼','แมงกะพรุน (ชะลอ)'],['🐬','โลมา (แรง)']],sum:[['🍽️','ผู้บริโภค','ไม่มีผนังเซลล์'],['🪼','ไนดาเรียน','2 ชั้น สมมาตรรัศมี'],['🪱','หนอน','แบนไม่มีโพรง กลมโพรงเทียม แอนเนลิดโพรงแท้'],['🐙','มอลลัสก์','โพรงลำตัวแท้ ปมประสาทใหญ่'],['🦀','อาร์โทรพอด','แมลง 6 ขา'],['🐬','คอร์เดต','โนโทคอร์ด มีกระดูกสันหลัง']]}];
+const ALL=[['เซลล์','โพรแคริโอต','ยูแคริโอต','ยูแคริโอต','ยูแคริโอต','ยูแคริโอต'],['ผนังเซลล์','เพปทิโดไกลแคน','ไม่มี/มีในสาหร่าย','ไคติน','เซลลูโลส','ไม่มี'],['ดำรงชีวิต','ผู้ผลิต/ย่อยสลาย/ปรสิต','ผู้ผลิต/ผู้บริโภค/ย่อยสลาย','ย่อยสลาย/ปรสิต','ผู้ผลิต','ผู้บริโภค'],['เนื้อเยื่อ/เอมบริโอ','ไม่มี','ไม่มี','ไม่มี','มี','มี']];
+const tb=()=>{$('#tw').innerHTML=TT.map((t,i)=>`<button data-i="${i}">${t.e} ${t.n}<br>🪙${t.c}</button>`).join('')};
+function summary(i){const d=KD[i];let h;if(i=='all')h=`<h3>🗺️ สรุปภาพรวม 5 อาณาจักร</h3><div style="overflow-x:auto"><table class="tb"><tr><th></th>${KD.map(x=>`<th>${x.e}<br>${x.k}</th>`).join('')}</tr>${ALL.map(r=>`<tr><th>${r[0]}</th>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;else h=`<h3>${d.e} สรุป ${d.k}</h3><div class="gr">${d.sum.map(s=>`<div class="sc"><div class="em">${s[0]}</div><b>${s[1]}</b><div>${s[2]}</div></div>`).join('')}</div>`;show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
+function play(i){K=i;Q=KD[i].q;TT.forEach((t,j)=>{t.e=KD[i].tw[j][0];t.n=KD[i].tw[j][1]});reset();S.in=1;tb();hud();sel();ask()}
+function intro(){$('#m').classList.remove('home-screen');$('#mc').classList.remove('home-card');reset();hud();sel();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';show('<h3>🌍 เลือกอาณาจักรที่จะป้องกัน</h3>'+(NAME?'<p>👤 สวัสดี '+esc(NAME)+'</p>':'')+'<p>ไวรัสบุก! ตอบ 10 ข้อ สู้ 10 เวฟ (บอสข้อ 3, 5, 7, 10) · คะแนนจากคำตอบเท่านั้น ปุ่ม 📊 คือสรุปภาพของแต่ละอาณาจักร</p>'+KD.map((d,i)=>`<div class="row"><button class="opt" data-p="${i}">${d.e} ${d.n} ${'⭐'.repeat(BEST[i]||0)}</button><button data-r="${i}">📋</button><button data-s="${i}">📊</button></div>`).join('')+'<button class="opt" data-s="all">🗺️ สรุปภาพรวม 5 อาณาจักร</button><button class="opt" data-r="all">📋 สรุปผลทุกด่าน</button><button class="opt" data-report="1">📸 บันทึกผลส่งครู</button><button class="opt" data-h="1">🏠 กลับหน้าแรก</button>');$('#mc').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.p!=null)play(+b.dataset.p);if(b.dataset.s!=null)summary(b.dataset.s);if(b.dataset.r!=null)result(b.dataset.r);if(b.dataset.report)reportPage();if(b.dataset.h)home()}}
+const RES=Object.assign({},SAVED.results||{});
+function persistResults(){
+ try{
+  localStorage.setItem(STORAGE_KEY,JSON.stringify({
+   studentName:NAME, best:BEST, results:RES,
+   updatedAt:new Date().toISOString()
+  }));
+ }catch(e){console.warn('บันทึกผลในเครื่องไม่สำเร็จ',e)}
+}
+function leave(){if(S.in)RES[K]=S.res.slice();persistResults();intro()}
+function result(i){let h;if(i=='all')h='<h3>📋 สรุปผลทุกด่าน'+(NAME?' ของ '+esc(NAME):'')+'</h3>'+KD.map((d,j)=>{const r=RES[j]||[],c=r.filter(x=>x).length;return `<div class="row"><span>${d.e} ${d.k}</span><span>${r.length?c+'/10 '+'⭐'.repeat(BEST[j]||0):'ยังไม่ได้เล่น'}</span></div>`}).join('');else{const d=KD[i],r=RES[i]||[];h=`<h3>${d.e} ผลด่าน ${d.k}</h3>`+d.q.map((q,j)=>`<div class="row"><span>${j+1}. ${isB(j)?'👑 ':''}${q.q.slice(0,40)}</span><span>${r[j]===undefined?'—':r[j]?'✅':'❌'}</span></div>`).join('')+`<p>ตอบถูก ${r.filter(x=>x).length}/10 ข้อ</p>`}show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
+
+function reportPage(){
+ if(S&&S.res&&S.res.length)RES[K]=S.res.slice();
+ const rows=KD.map((d,j)=>{const r=RES[j]||[],answered=r.filter(x=>x!==undefined).length,correct=r.filter(Boolean).length;return {name:d.k,emoji:d.e,answered,correct,stars:BEST[j]||0,played:answered>0};});
+ const played=rows.filter(x=>x.played),totalAnswered=rows.reduce((a,x)=>a+x.answered,0),totalCorrect=rows.reduce((a,x)=>a+x.correct,0),totalStars=rows.reduce((a,x)=>a+x.stars,0);
+ const date=new Date().toLocaleString('th-TH',{dateStyle:'long',timeStyle:'short'});
+ const card=`<div class="report-card" id="reportCapture">
+ <div class="report-head"><div class="badge-icon">🏰🌍</div><h2>Kingdom Defense by KRUPOY</h2><div>ใบสรุปผลการเล่นเกม</div></div>
+ <div class="report-meta"><span class="report-chip">👤 ${esc(NAME||'ไม่ระบุชื่อ')}</span><span class="report-chip">📅 ${date}</span></div>
+ <div class="report-grid">${rows.map(x=>`<div class="report-item"><b>${x.emoji} ${x.name}</b><div>${x.played?`ตอบถูก <strong>${x.correct}/${x.answered}</strong> ข้อ`:'ยังไม่ได้เล่น'}</div><small>${x.played?'⭐'.repeat(x.stars)+'☆'.repeat(3-x.stars):'—'}</small></div>`).join('')}</div>
+ <div class="report-total"><div>คะแนนรวมอาณาจักรที่เล่น</div><strong>${totalCorrect} / ${totalAnswered}</strong><div>⭐ ${totalStars} ดาว · เล่นแล้ว ${played.length}/5 อาณาจักร</div></div>
+ <div class="report-credit">พัฒนาโดย ครูภัทรกันย์ กิติยศ</div></div>`;
+ show(`<h3>📸 บันทึกผลการเล่นส่งครู</h3><p>ตรวจสอบชื่อและคะแนน แล้วบันทึกภาพสรุปผลเพื่อส่งให้ครู</p>${card}
+ <div class="report-actions"><button class="go" id="saveReport">⬇️ ดาวน์โหลดผลสรุป JPG</button><button id="backReport">← กลับเมนู</button></div>
+ <p id="reportStatus" style="text-align:center"></p><button id="backReport">← กลับเมนู</button>`);
+ $('#backReport').onclick=intro;$('#saveReport').onclick=downloadReportImage;
+}
+async function downloadReportImage(){
+ const target=$('#reportCapture'),status=$('#reportStatus'),btn=$('#saveReport');
+ if(!target)return;
+ if(!window.html2canvas){status.textContent='โหลดระบบสร้างรูปภาพไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต';return;}
+ btn.disabled=true;status.textContent='กำลังสร้างรูปภาพ...';
+ try{const canvas=await html2canvas(target,{scale:2,backgroundColor:'#fffdfd',useCORS:true});
+ const a=document.createElement('a');a.download='Kingdom_Defense_'+(NAME||'student').replace(/[^\u0E00-\u0E7Fa-zA-Z0-9_-]/g,'_')+'.jpg';a.href=canvas.toDataURL('image/jpeg',0.92);a.click();status.textContent='บันทึกภาพ JPG เรียบร้อยแล้ว สามารถส่งให้ครูได้เลย';
+ }catch(e){status.textContent='สร้างรูปภาพไม่สำเร็จ: '+e.message;}btn.disabled=false;
+}
+function getReportPayload(){
+ if(S&&S.res&&S.res.length)RES[K]=S.res.slice();
+ const kingdoms=KD.map((d,j)=>{const r=RES[j]||[];return {kingdom:d.k,answered:r.filter(x=>x!==undefined).length,correct:r.filter(Boolean).length,stars:BEST[j]||0};});
+ return {studentName:NAME||'ไม่ระบุชื่อ',game:'Kingdom Defense by KRUPOY',playedAt:new Date().toISOString(),kingdoms,totalAnswered:kingdoms.reduce((a,x)=>a+x.answered,0),totalCorrect:kingdoms.reduce((a,x)=>a+x.correct,0),totalStars:kingdoms.reduce((a,x)=>a+x.stars,0)};
+}
+let NAME='';try{NAME=localStorage.getItem('krupoy_kingdom_defense_name')||''}catch(e){}const esc=s=>s.replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+function home(){
+ reset();hud();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';
+ $('#m').classList.add('home-screen');
+ show(`<section class="home-card">
+   <div class="home-brand">🌍 Kingdom Defense</div>
+   <div class="home-subtitle">by KRUPOY · เกมผจญภัยปกป้อง 5 อาณาจักรสิ่งมีชีวิต</div>
+   <div class="home-colorbar"></div>
+   <div class="home-art" aria-hidden="true">
+    <div class="home-orbit"></div>
+    <span class="home-float f1">🍄</span><span class="home-float f2">🧬</span>
+    <span class="home-float f3">🌿</span><span class="home-float f4">🦠</span>
+    <span class="home-core">🏰</span>
+   </div>
+   <p class="home-description">เตรียมพร้อมปกป้องอาณาจักรทั้ง 5<br>ตอบคำถาม สะสมเหรียญ และวางป้อมหยุดกองทัพไวรัส!</p>
+   <label class="home-name-label" for="nm">ชื่อนักปกป้องอาณาจักร</label>
+   <input class="home-name" id="nm" maxlength="30" placeholder="กรอกชื่อผู้เล่น" value="${esc(NAME)}" autocomplete="name">
+   <div id="fb"></div>
+   <button class="go home-start" id="gs">เริ่มการผจญภัย　▶</button>
+   <div class="home-tools">
+    <button id="homeMusic" aria-pressed="${AudioFX.musicOn}">${AudioFX.musicOn?'🎵 ปิดเพลง':'🎵 เปิดเพลง'}</button>
+    <button id="homeSound" aria-pressed="${AudioFX.sfxOn}">${AudioFX.sfxOn?'🔊 เอฟเฟกต์: เปิด':'🔇 เอฟเฟกต์: ปิด'}</button>
+   </div>
+   <div class="home-howto"><span>🧠 ตอบคำถาม</span><span>🪙 สะสมเหรียญ</span><span>🛡️ วางป้อม</span><span>⭐ เก็บดาว</span></div>
+   <div class="home-credit">✦ พัฒนาโดย <strong>ครูภัทรกันย์ กิติยศ</strong> ✦</div>
+  </section>`);
+ $('#mc').classList.add('home-card');$('#mc').onclick=null;
+ const go=()=>{const v=$('#nm').value.trim();if(!v){say2('กรุณากรอกชื่อก่อนเริ่มเล่น');$('#nm').focus();return;}NAME=v;try{localStorage.setItem('krupoy_kingdom_defense_name',NAME)}catch(e){}AudioFX.click();intro()};
+ $('#gs').onclick=go;$('#nm').onkeydown=e=>{if(e.key==='Enter')go()};
+ $('#homeMusic').onclick=()=>{const on=AudioFX.toggleMusic();$('#homeMusic').textContent=on?'🎵 ปิดเพลง':'🎵 เปิดเพลง';$('#homeMusic').setAttribute('aria-pressed',String(on));if(on)AudioFX.click()};
+ $('#homeSound').onclick=()=>{const on=AudioFX.toggleSfx();$('#homeSound').textContent=on?'🔊 เอฟเฟกต์: เปิด':'🔇 เอฟเฟกต์: ปิด';$('#homeSound').setAttribute('aria-pressed',String(on));if(on)AudioFX.click()};
+}
+$('#mn').onclick=leave;
+
+// Speed control is available only while a wave is running.
+const SPEEDS=[1,1.5,2];
+$('#speed').onclick=()=>{
+ if(!S||!S.run)return;
+ const i=SPEEDS.indexOf(S.fast||1);
+ S.fast=SPEEDS[(i+1)%SPEEDS.length];
+ $('#speed').textContent='⏩ '+S.fast+'×';
+ AudioFX.click();
+};
+$('#music').onclick=()=>{
+ const on=AudioFX.toggleMusic();
+ $('#music').textContent=on?'🎵 ปิดเพลง':'🎵 เปิดเพลง';
+ $('#music').setAttribute('aria-pressed',String(on));
+ AudioFX.click();
+};
+$('#sound').onclick=()=>{
+ const on=AudioFX.toggleSfx();
+ $('#sound').textContent=on?'🔊 เอฟเฟกต์: เปิด':'🔇 เอฟเฟกต์: ปิด';
+ $('#sound').setAttribute('aria-pressed',String(on));
+ if(on)AudioFX.click();
+};
+
+// Pastel tap feedback for mouse, touch and keyboard activation.
+function buttonTapFX(button, clientX, clientY){
+ if(!button || button.disabled)return;
+ const rect=button.getBoundingClientRect();
+ const x=Number.isFinite(clientX)?clientX-rect.left:rect.width/2;
+ const y=Number.isFinite(clientY)?clientY-rect.top:rect.height/2;
+ const ripple=document.createElement('span');
+ ripple.className='tap-ripple';
+ ripple.style.setProperty('--tap-x',x+'px');
+ ripple.style.setProperty('--tap-y',y+'px');
+ button.appendChild(ripple);
+ ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});
+
+ button.classList.remove('tap-pop');
+ void button.offsetWidth;
+ button.classList.add('tap-pop');
+ button.addEventListener('animationend',e=>{
+   if(e.animationName==='buttonPop')button.classList.remove('tap-pop');
+ },{once:true});
+
+ const colors=['#e9a6c4','#c39add','#9dcfb8','#f0c879','#9fc3eb'];
+ for(let i=0;i<4;i++){
+   const spark=document.createElement('span');
+   spark.className='tap-spark';
+   spark.textContent=i%2?'✧':'✦';
+   spark.style.setProperty('--sx',x+'px');
+   spark.style.setProperty('--sy',y+'px');
+   spark.style.setProperty('--dx',((i-1.5)*17)+'px');
+   spark.style.setProperty('--dy',(-15-Math.abs(i-1.5)*8)+'px');
+   spark.style.setProperty('--ss',(10+(i%2)*5)+'px');
+   spark.style.setProperty('--spark-color',colors[i]);
+   button.appendChild(spark);
+   spark.addEventListener('animationend',()=>spark.remove(),{once:true});
+ }
+}
+document.addEventListener('pointerdown',e=>{
+ const button=e.target.closest('button');
+ if(!button||button.disabled)return;
+ buttonTapFX(button,e.clientX,e.clientY);
+}, {passive:true});
+document.addEventListener('click',e=>{
+ // Keyboard / assistive-technology activation has no preceding pointer event.
+ if(e.detail!==0)return;
+ const button=e.target.closest('button');
+ if(button&&!button.disabled)buttonTapFX(button);
+},true);
+
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');
+ if(!b||['music','sound','speed','homeMusic','homeSound'].includes(b.id)||b.disabled)return;
+ // First real user gesture unlocks audio on browsers that block autoplay.
+ AudioFX.init();AudioFX.click();
+},true);
+
+const TY={mc:'ปรนัย',assign:'จับคู่/จำแนก',order:'เรียงลำดับ'};
+const TT=[{e:'🍄',n:'เห็ด',c:60,r:110,d:9,cd:600},{e:'🍞',n:'ราขนมปัง (ชะลอ)',c:90,r:95,d:3,cd:500,sl:1},{e:'🧫',n:'ยีสต์ (แรง)',c:120,r:140,d:26,cd:1300}];
+const cv=$('#cv'),ctx=cv.getContext('2d'),G=40,W=16,H=9;cv.width=W*G;cv.height=H*G;
+const wp=[[0,1],[13,1],[13,4],[2,4],[2,7],[15,7]],pc=new Set();
+for(let i=0;i<wp.length-1;i++){let[a,b]=wp[i],[c,d]=wp[i+1],x=a,y=b;pc.add(x+','+y);while(x!=c||y!=d){x+=Math.sign(c-a);y+=Math.sign(d-b);pc.add(x+','+y)}}
+const pts=wp.map(([x,y])=>[x*G+G/2,y*G+G/2]);
+let S;
+function reset(){S={lives:10,coins:40,wave:0,speed:1,fast:1,correct:0,en:[],tw:[],bm:[],run:false,sel:0,left:0,sp:0,ans:0,res:[]}}
+function hud(){$('#hl').textContent='❤️ '+S.lives;$('#hc').textContent='🪙 '+S.coins;$('#hw').textContent='ข้อ '+Math.min(S.wave+1,10)+'/10'}
+function say(t){$('#msg').textContent=t;setTimeout(()=>{if($('#msg').textContent==t)$('#msg').textContent=''},2000)}
+$('#tw').innerHTML=TT.map((t,i)=>`<button data-i="${i}">${t.e} ${t.n}<br>🪙${t.c}</button>`).join('');
+$('#tw').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.sel=+b.dataset.i;sel()};
+function sel(){document.querySelectorAll('#tw button').forEach((b,i)=>b.classList.toggle('on',i==S.sel))}
+cv.onclick=e=>{const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)*cv.width/r.width/G),y=Math.floor((e.clientY-r.top)*cv.height/r.height/G),t=TT[S.sel];
+if(pc.has(x+','+y))return say('วางบนทางเดินไม่ได้');if(S.tw.some(o=>o.x==x&&o.y==y))return say('ช่องนี้มีป้อมแล้ว');if(S.coins<t.c)return say('เหรียญไม่พอ ตอบคำถามให้ถูกหรือกำจัดไวรัสเพื่อรับเหรียญเพิ่ม');
+S.coins-=t.c;S.tw.push({x,y,t,cd:0});hud()};
+function show(h){$('#mc').innerHTML=h+(S&&S.in?'<button id="ex" style="margin-top:10px">✖ ออกจากด่าน</button>':'');$('#m').style.display='flex';const x=$('#ex');if(x)x.onclick=leave}
+function hide(){$('#m').style.display='none'}
+function intro0(){reset();hud();sel();$('#go').disabled=true;show(`<h3>🍄 ด่านอาณาจักร Fungi</h3><p>ไวรัสกำลังบุกเข้ามา! เริ่มต้นได้รับทุน 40 เหรียญ ตอบคำถามให้ถูกและกำจัดไวรัสเพื่อรับเหรียญไปซื้อป้อมช่วยป้องกันอาณาจักร (เหรียญจากการกำจัดไวรัสใช้ซื้อป้อมเท่านั้น ไม่เพิ่มคะแนนหรือดาว) ทั้งหมด 10 ข้อ 10 เวฟ ด่าน 7 มีบอส 5 ตัว และด่าน 10 มีบอส 8 ตัว<br>ตอบผิด = ศัตรูเร็วขึ้น</p><button class="go" id="st">เริ่มเกม ▶</button>`);$('#st').onclick=ask}
+function ask(){const q=Q[S.wave];S.ans=0;
+show(`<div class="tag">${isB(S.wave)?'👑 บอส · ':''}ข้อ ${S.wave+1}/10 · ${TY[q.t]}</div><h3>${q.q}</h3><div id="bd"></div><div id="fb"></div>`);const b=$('#bd');
+if(q.t=='mc')sh(q.o.map((t,i)=>[t,i==q.a])).forEach(([t,ok])=>{const x=document.createElement('button');x.className='opt';x.innerHTML=t;x.onclick=()=>done(ok,ok?'':'<br>เฉลย: '+q.o[q.a]);b.append(x)});
+else if(q.t=='assign'){q.i.forEach(t=>{const r=document.createElement('div');r.className='row';
+const optionOrder=sh(q.o.map((o,j)=>j));
+r.innerHTML=`<span>${t}</span><select><option value="-1">— เลือก —</option>${optionOrder.map(j=>`<option value="${j}">${q.o[j]}</option>`).join('')}</select>`;b.append(r)});
+const c=document.createElement('button');c.className='go';c.textContent='ตรวจคำตอบ';c.onclick=()=>{const v=[...b.querySelectorAll('select')].map(s=>+s.value);if(v.includes(-1))return say2('ยังเลือกไม่ครบทุกข้อ');const ok=v.every((x,i)=>x==q.a[i]);done(ok,ok?'':'<br>เฉลย: '+q.i.map((t,i)=>t+' → '+q.o[q.a[i]]).join(', '))};b.append(c)}
+else{const pk=[],ln=document.createElement('p'),ch=document.createElement('div');ch.className='chips';ln.textContent='ลำดับของคุณ: -';b.append(ln,ch);
+sh(q.i).forEach(t=>{const x=document.createElement('button');x.textContent=t;x.onclick=()=>{x.disabled=true;pk.push(t);ln.textContent='ลำดับของคุณ: '+pk.join(' → ');if(pk.length==q.i.length){const ok=pk.every((v,i)=>v==q.i[i]);done(ok,ok?'':'<br>ลำดับที่ถูก: '+q.i.join(' → '))}};ch.append(x)});
+const r=document.createElement('button');r.textContent='↺ ล้าง';r.onclick=ask;b.append(r)}}
+function say2(t){$('#fb').innerHTML='<p class="r">'+t+'</p>'}
+function done(ok,ex){if(S.ans)return;S.ans=1;if(ok)AudioFX.success();else AudioFX.error();S.res[S.wave]=ok;const q=Q[S.wave],rw=isB(S.wave)?60:30;
+if(ok){S.correct++;S.coins+=rw}else S.speed=Math.min(1.6,S.speed+.1);
+document.querySelectorAll('#bd button,#bd select').forEach(e=>e.disabled=true);
+$('#fb').innerHTML=`<p class="${ok?'g':'r'}">${ok?'✅ ถูกต้อง! +'+rw+' 🪙':'❌ ยังไม่ถูก ศัตรูเร็วขึ้น'}</p><p>${q.ex}${ex}</p><button class="go" id="nx">ไปวางป้อม ▶</button>`;
+$('#nx').onclick=()=>{hide();hud();$('#go').disabled=false};hud()}
+$('#go').onclick=()=>{if(S.run)return;AudioFX.wave();const w=S.wave;S.run=true;S.fast=1;$('#speed').textContent='⏩ 1×';$('#speed').disabled=false;S.bossCount=w===6?5:w===9?8:(isB(w)?1:0);S.left=5+w*2+S.bossCount;S.sp=0;S.n=0;$('#go').disabled=true};
+function spawn(){const w=S.wave,boss=isB(w)&&S.n>=S.left-S.bossCount,hp=(18+w*9)*(boss?(w==9?10:6):1);S.n++;S.en.push({x:pts[0][0],y:pts[0][1],sg:1,hp,mh:hp,d:0,sl:0,big:boss})}
+function end(win){S.run=false;$('#speed').disabled=true;S.in=0;const st=S.correct>=9?3:S.correct>=7?2:S.correct>=5?1:0;BEST[K]=Math.max(BEST[K]||0,st);RES[K]=S.res.slice();persistResults();show(win?`<h3>🎉 ป้องกันอาณาจักรฟังไจสำเร็จ!</h3><p style="font-size:28px">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</p><p>ตอบถูก ${S.correct}/10 ข้อ</p><p>คะแนนและดาวคำนวณจากคำตอบที่ถูกเท่านั้น</p><button id="sm">📊 ดูสรุปภาพ</button> <button class="go" id="rs">กลับเมนู</button>`:`<h3>💥 ไวรัสบุกเข้าถึงปลายทางแล้ว</h3><p style="font-size:28px">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</p><p>ตอบถูก ${S.correct}/${S.wave+1} ข้อ</p><p>คะแนนและดาวคำนวณจากคำตอบที่ถูกเท่านั้น</p><button id="sm">📊 ดูสรุปภาพ</button> <button class="go" id="rs">เล่นอีกครั้ง</button>`);$('#rs').onclick=intro;if($('#sm'))$('#sm').onclick=()=>summary(K)}
+let last=performance.now();
+function loop(n){const rawDt=Math.min(.05,(n-last)/1000);last=n;const dt=rawDt*(S&&S.run?(S.fast||1):1);if(S&&S.run){
+S.sp-=dt;if(S.n<S.left&&S.sp<=0){spawn();S.sp=.9}
+S.en.forEach(e=>{e.sl=Math.max(0,e.sl-dt);let v=45*S.speed*(e.sl>0?.5:1)*dt;while(v>0&&e.sg<pts.length){const[tx,ty]=pts[e.sg],dx=tx-e.x,dy=ty-e.y,l=Math.hypot(dx,dy);if(l<=v){e.x=tx;e.y=ty;e.sg++;e.d+=l;v-=l}else{e.x+=dx/l*v;e.y+=dy/l*v;e.d+=v;v=0}}
+if(e.sg>=pts.length){e.hp=-1;e.leak=1}});
+S.en.filter(e=>e.leak).forEach(()=>S.lives--);
+S.tw.forEach(t=>{t.cd-=dt*1000;if(t.cd>0)return;const px=t.x*G+G/2,py=t.y*G+G/2;let b=null;S.en.forEach(e=>{if(e.hp>0&&Math.hypot(e.x-px,e.y-py)<=t.t.r&&(!b||e.d>b.d))b=e});
+if(b){b.hp-=t.t.d;if(t.t.sl)b.sl=1.5;t.cd=t.t.cd;S.bm.push({a:px,b:py,c:b.x,d:b.y,l:.1})}});
+S.en.forEach(e=>{if(e.hp<=0&&!e.leak)S.coins+=e.big?15:2});S.en=S.en.filter(e=>e.hp>0);S.bm.forEach(m=>m.l-=dt);S.bm=S.bm.filter(m=>m.l>0);hud();
+if(S.lives<=0)end(false);else if(S.n>=S.left&&!S.en.length){S.run=false;$('#speed').disabled=true;S.wave++;if(S.wave>=10)end(true);else ask()}}
+if(S)draw();requestAnimationFrame(loop)}
+function draw(){
+ const now=performance.now()/1000;
+ const bg=ctx.createLinearGradient(0,0,cv.width,cv.height);
+ bg.addColorStop(0,'#d8f0d0');bg.addColorStop(.55,'#b9e2c2');bg.addColorStop(1,'#a8d8c7');
+ ctx.fillStyle=bg;ctx.fillRect(0,0,cv.width,cv.height);
+ // Soft grass texture and tiny flowers
+ for(let y=14;y<H*G;y+=42)for(let x=12;x<W*G;x+=47){
+  if(!pc.has(Math.floor(x/G)+','+Math.floor(y/G))){
+   ctx.fillStyle='rgba(255,255,255,.13)';ctx.beginPath();ctx.arc(x+(y%3)*3,y,1.4,0,Math.PI*2);ctx.fill();
+  }
+ }
+ // Path with a dark edge, warm center and dashed highlights
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+ ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+ ctx.strokeStyle='rgba(137,119,101,.20)';ctx.lineWidth=G*.88;ctx.stroke();
+ ctx.strokeStyle='#d8b98f';ctx.lineWidth=G*.72;ctx.stroke();
+ ctx.strokeStyle='#f3ddb5';ctx.lineWidth=G*.56;ctx.stroke();
+ ctx.setLineDash([5,10]);ctx.strokeStyle='rgba(255,248,213,.48)';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
+ ctx.restore();
+ // Start and finish markers
+ ctx.font='23px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.fillText('🚪',pts[0][0],pts[0][1]-17);ctx.fillText('🏰',pts[pts.length-1][0],pts[pts.length-1][1]-18);
+ // Tower pads and towers
+ S.tw.forEach(t=>{
+  const x=t.x*G+G/2,y=t.y*G+G/2;
+  ctx.save();ctx.shadowColor='rgba(30,76,42,.3)';ctx.shadowBlur=8;ctx.shadowOffsetY=3;
+  ctx.fillStyle='#fff0f5';ctx.beginPath();ctx.arc(x,y,17,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.strokeStyle='#b9a0d1';ctx.lineWidth=2;ctx.stroke();
+  ctx.font='25px serif';ctx.fillText(t.t.e,x,y+1);ctx.restore();
+ });
+ // Projectiles
+ S.bm.forEach(m=>{
+  ctx.save();ctx.globalAlpha=Math.max(0,m.l/.1);ctx.strokeStyle='#f7f5b2';ctx.lineWidth=4;
+  ctx.shadowColor='#fff';ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(m.a,m.b);ctx.lineTo(m.c,m.d);ctx.stroke();ctx.restore();
+ });
+ // Enemies with a gentle bob, glow and health bars
+ S.en.forEach(e=>{
+  const bob=Math.sin(now*5+e.d*.02)*2.2,rad=e.big?19:13;
+  ctx.save();ctx.translate(e.x,e.y+bob);
+  ctx.shadowColor=e.big?'rgba(130,32,90,.65)':'rgba(43,57,120,.45)';ctx.shadowBlur=e.big?18:10;
+  ctx.fillStyle=e.big?'#d99acb':'#9db8df';ctx.beginPath();ctx.arc(0,0,rad,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;ctx.strokeStyle=e.big?'#b77aa9':'#7897c2';ctx.lineWidth=2;ctx.stroke();
+  // virus spikes
+  for(let i=0;i<10;i++){const a=i*Math.PI/5;ctx.strokeStyle=e.big?'#b77aa9':'#7897c2';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(Math.cos(a)*(rad-1),Math.sin(a)*(rad-1));ctx.lineTo(Math.cos(a)*(rad+6),Math.sin(a)*(rad+6));ctx.stroke();ctx.fillStyle='#fff0fa';ctx.beginPath();ctx.arc(Math.cos(a)*(rad+6),Math.sin(a)*(rad+6),2.2,0,Math.PI*2);ctx.fill()}
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(-4,-2,2.5,0,Math.PI*2);ctx.arc(4,-2,2.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#66577e';ctx.beginPath();ctx.arc(-4,-2,1,0,Math.PI*2);ctx.arc(4,-2,1,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  const bw=e.big?42:30,hy=e.y-(e.big?30:22);
+  ctx.fillStyle='rgba(42,47,42,.35)';ctx.fillRect(e.x-bw/2,hy,bw,5);
+  ctx.fillStyle='#e9a0b1';ctx.fillRect(e.x-bw/2,hy,bw,5);
+  ctx.fillStyle='#91cdb0';ctx.fillRect(e.x-bw/2,hy,bw*Math.max(0,e.hp)/e.mh,5);
+  ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=1;ctx.strokeRect(e.x-bw/2,hy,bw,5);
+ });
+}
+reset();home();requestAnimationFrame(loop);
+</script></body></html>

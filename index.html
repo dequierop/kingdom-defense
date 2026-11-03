@@ -607,8 +607,21 @@ body{background:radial-gradient(ellipse at 50% 0%,#e7fbff 0%,transparent 34%),li
   .soundbar button{min-height:38px;font-size:11px}
   .game-credit{font-size:10px;margin:0;padding:5px 0 0}
 }
+/* ===== Desktop + iPad battlefield sizing =====
+   Keep the canvas at the same 3:4 ratio as the portrait map artwork.
+   Scale it by viewport height so the actual map uses much more screen space
+   without stretching or leaving green side bars. */
 @media(min-width:601px){
-  #cv{aspect-ratio:16/9}
+  #app{max-width:900px}
+  #cv{
+    display:block;
+    width:min(100%, 62dvh, 700px)!important;
+    height:auto!important;
+    max-width:100%!important;
+    aspect-ratio:3/4!important;
+    object-fit:fill!important;
+    margin:6px auto 12px;
+  }
 }
 
 

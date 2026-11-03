@@ -332,6 +332,55 @@ button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
 @media(max-aspect-ratio:3/4){.cover-frame{width:100vw;max-height:none}.cover-screen{align-items:center}.cover-name-wrap{width:34%}.cover-name{height:clamp(22px,5vw,34px);font-size:clamp(10px,2.5vw,13px)}}
 @media(prefers-reduced-motion:reduce){.cover-hit{transition:none!important}}
 
+
+/* ===== 3D Chibi Fantasy level-selection screen ===== */
+#m.level-screen{
+ position:fixed;inset:0;z-index:30;padding:0;margin:0;
+ display:flex;align-items:center;justify-content:center;
+ background:rgba(35,25,49,.88);backdrop-filter:blur(3px);
+}
+#m.level-screen .level-card{
+ position:relative;flex:none;width:min(100vw,177.78dvh);
+ height:min(100dvh,56.25vw);max-width:none;max-height:none;
+ margin:0;padding:0;border:0;border-radius:0;overflow:hidden;
+ background:#8bc9ed;box-shadow:0 18px 60px rgba(0,0,0,.28);
+}
+.level-scene{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.level-scene-art{display:block;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none}
+.level-hit{
+ position:absolute;z-index:2;margin:0;padding:0!important;min-width:0!important;min-height:0!important;
+ border:2px solid transparent!important;border-radius:18px!important;
+ background:rgba(255,255,255,0)!important;box-shadow:none!important;color:transparent!important;
+ font-size:0!important;line-height:0!important;outline:none!important;
+ transform:none!important;filter:none!important;overflow:hidden;
+}
+.level-hit:hover:not(:disabled){background:rgba(255,255,255,.16)!important;border-color:rgba(255,255,255,.72)!important;box-shadow:0 0 0 3px rgba(255,255,255,.22)!important}
+.level-hit:active:not(:disabled){background:rgba(255,255,255,.25)!important;transform:scale(.985)!important}
+.level-hit:focus-visible{outline:4px solid #fff!important;border-color:#7a4aa2!important;background:rgba(255,255,255,.2)!important}
+.level-row{left:25.1%;width:37.1%;height:7.6%}
+.level-row.r0{top:34.4%}.level-row.r1{top:43.0%}.level-row.r2{top:51.6%}.level-row.r3{top:60.1%}.level-row.r4{top:68.7%}
+.level-report{left:62.8%;width:5.7%;height:7.6%}
+.level-chart{left:68.9%;width:5.7%;height:7.6%}
+.level-report.r0,.level-chart.r0{top:34.4%}
+.level-report.r1,.level-chart.r1{top:43.0%}
+.level-report.r2,.level-chart.r2{top:51.6%}
+.level-report.r3,.level-chart.r3{top:60.1%}
+.level-report.r4,.level-chart.r4{top:68.7%}
+.level-summary{left:19.1%;top:80.1%;width:20.1%;height:12.2%}
+.level-results{left:39.7%;top:80.1%;width:20.1%;height:12.2%}
+.level-send{left:60.4%;top:80.1%;width:20.1%;height:12.2%}
+.level-home{left:.5%;top:90.4%;width:10.5%;height:8.6%}
+.level-name{
+ position:absolute;z-index:3;left:43%;top:23%;width:17%;height:4%;
+ color:#714b87;font-size:clamp(9px,1.15vw,16px);font-weight:800;text-align:center;
+ text-shadow:0 1px 0 #fff;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+@media(max-width:600px){
+ #m.level-screen{background:#27334c}
+ #m.level-screen .level-card{width:100vw;height:56.25vw}
+ .level-hit{border-radius:8px!important}
+}
+
 </style></head><body><div id="app">
 <h1>🌍 Kingdom Defense by KRUPOY</h1>
 <div class="hud"><span id="hl">❤️ 10</span><span id="hc">🪙 60</span><span id="hw">ข้อ 1/10</span></div>
@@ -469,11 +518,44 @@ const KD=[
 {k:'Animalia',e:'🐬',n:'Animalia สัตว์',q:Aq,tw:[['🐙','มอลลัสก์'],['🪼','แมงกะพรุน (ชะลอ)'],['🐬','โลมา (แรง)']],sum:[['🍽️','ผู้บริโภค','ไม่มีผนังเซลล์'],['🪼','ไนดาเรียน','2 ชั้น สมมาตรรัศมี'],['🪱','หนอน','แบนไม่มีโพรง กลมโพรงเทียม แอนเนลิดโพรงแท้'],['🐙','มอลลัสก์','โพรงลำตัวแท้ ปมประสาทใหญ่'],['🦀','อาร์โทรพอด','แมลง 6 ขา'],['🐬','คอร์เดต','โนโทคอร์ด มีกระดูกสันหลัง']]}];
 const ALL=[['เซลล์','โพรแคริโอต','ยูแคริโอต','ยูแคริโอต','ยูแคริโอต','ยูแคริโอต'],['ผนังเซลล์','เพปทิโดไกลแคน','ไม่มี/มีในสาหร่าย','ไคติน','เซลลูโลส','ไม่มี'],['ดำรงชีวิต','ผู้ผลิต/ย่อยสลาย/ปรสิต','ผู้ผลิต/ผู้บริโภค/ย่อยสลาย','ย่อยสลาย/ปรสิต','ผู้ผลิต','ผู้บริโภค'],['เนื้อเยื่อ/เอมบริโอ','ไม่มี','ไม่มี','ไม่มี','มี','มี']];
 const tb=()=>{$('#tw').innerHTML=TT.map((t,i)=>`<button data-i="${i}">${t.e} ${t.n}<br>🪙${t.c}</button>`).join('')};
-function summary(i){const d=KD[i];let h;if(i=='all')h=`<h3>🗺️ สรุปภาพรวม 5 อาณาจักร</h3><div style="overflow-x:auto"><table class="tb"><tr><th></th>${KD.map(x=>`<th>${x.e}<br>${x.k}</th>`).join('')}</tr>${ALL.map(r=>`<tr><th>${r[0]}</th>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;else h=`<h3>${d.e} สรุป ${d.k}</h3><div class="gr">${d.sum.map(s=>`<div class="sc"><div class="em">${s[0]}</div><b>${s[1]}</b><div>${s[2]}</div></div>`).join('')}</div>`;show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
-function play(i){K=i;Q=KD[i].q;TT.forEach((t,j)=>{t.e=KD[i].tw[j][0];t.n=KD[i].tw[j][1]});reset();S.in=1;tb();hud();sel();ask()}
-function intro(){$('#m').classList.remove('home-screen');$('#mc').classList.remove('home-card');reset();hud();sel();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';show('<h3>🌍 เลือกอาณาจักรที่จะป้องกัน</h3>'+(NAME?'<p>👤 สวัสดี '+esc(NAME)+'</p>':'')+'<p>ไวรัสบุก! ตอบ 10 ข้อ สู้ 10 เวฟ (บอสข้อ 3, 5, 7, 10) · คะแนนจากคำตอบเท่านั้น ปุ่ม 📊 คือสรุปภาพของแต่ละอาณาจักร</p>'+KD.map((d,i)=>`<div class="row"><button class="opt" data-p="${i}">${d.e} ${d.n} ${'⭐'.repeat(BEST[i]||0)}</button><button data-r="${i}">📋</button><button data-s="${i}">📊</button></div>`).join('')+'<button class="opt" data-s="all">🗺️ สรุปภาพรวม 5 อาณาจักร</button><button class="opt" data-r="all">📋 สรุปผลทุกด่าน</button><button class="opt" data-report="1">📸 บันทึกผลส่งครู</button><button class="opt" data-h="1">🏠 กลับหน้าแรก</button>');$('#mc').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.p!=null)play(+b.dataset.p);if(b.dataset.s!=null)summary(b.dataset.s);if(b.dataset.r!=null)result(b.dataset.r);if(b.dataset.report)reportPage();if(b.dataset.h)home()}}
+function summary(i){clearLevelScreen();const d=KD[i];let h;if(i=='all')h=`<h3>🗺️ สรุปภาพรวม 5 อาณาจักร</h3><div style="overflow-x:auto"><table class="tb"><tr><th></th>${KD.map(x=>`<th>${x.e}<br>${x.k}</th>`).join('')}</tr>${ALL.map(r=>`<tr><th>${r[0]}</th>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;else h=`<h3>${d.e} สรุป ${d.k}</h3><div class="gr">${d.sum.map(s=>`<div class="sc"><div class="em">${s[0]}</div><b>${s[1]}</b><div>${s[2]}</div></div>`).join('')}</div>`;show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
+function play(i){clearLevelScreen();K=i;Q=KD[i].q;TT.forEach((t,j)=>{t.e=KD[i].tw[j][0];t.n=KD[i].tw[j][1]});reset();S.in=1;tb();hud();sel();ask()}
+function clearLevelScreen(){
+ $('#m').classList.remove('level-screen');
+ $('#mc').classList.remove('level-card');
+}
+function intro(){
+ $('#m').classList.remove('home-screen');
+ $('#mc').classList.remove('home-card');
+ reset();hud();sel();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';
+ $('#m').classList.add('level-screen');
+ $('#mc').classList.add('level-card');
+ const rows=KD.map((d,i)=>`
+  <button class="level-hit level-row r${i}" data-p="${i}" aria-label="เริ่มด่าน ${d.k}: ${d.n}" title="เริ่มด่าน ${d.k}"></button>
+  <button class="level-hit level-report r${i}" data-r="${i}" aria-label="ดูผลด่าน ${d.k}" title="ดูผลด่าน"></button>
+  <button class="level-hit level-chart r${i}" data-s="${i}" aria-label="ดูสรุป ${d.k}" title="ดูสรุป"></button>
+ `).join('');
+ show(`<section class="level-scene" aria-label="เลือกด่านเรียนรู้ Kingdom Defense">
+  <img class="level-scene-art" src="kingdom-level-select.png" alt="หน้าจอเลือกด่าน Kingdom Defense ธีมอาณาจักรแฟนตาซี">
+  <div class="level-name">${NAME?'ผู้เล่น: '+esc(NAME):''}</div>
+  ${rows}
+  <button class="level-hit level-summary" data-s="all" aria-label="สรุปภาพรวม 5 อาณาจักร"></button>
+  <button class="level-hit level-results" data-r="all" aria-label="สรุปผลทุกด่าน"></button>
+  <button class="level-hit level-send" data-report="1" aria-label="บันทึกผลส่งครู"></button>
+  <button class="level-hit level-home" data-h="1" aria-label="กลับหน้าปก"></button>
+ </section>`);
+ $('#mc').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  AudioFX.click();
+  if(b.dataset.p!=null)play(+b.dataset.p);
+  else if(b.dataset.s!=null)summary(b.dataset.s);
+  else if(b.dataset.r!=null)result(b.dataset.r);
+  else if(b.dataset.report)reportPage();
+  else if(b.dataset.h)home();
+ };
+}
 const RES={};function leave(){if(S.in)RES[K]=S.res.slice();intro()}
-function result(i){let h;if(i=='all')h='<h3>📋 สรุปผลทุกด่าน'+(NAME?' ของ '+esc(NAME):'')+'</h3>'+KD.map((d,j)=>{const r=RES[j]||[],c=r.filter(x=>x).length;return `<div class="row"><span>${d.e} ${d.k}</span><span>${r.length?c+'/10 '+'⭐'.repeat(BEST[j]||0):'ยังไม่ได้เล่น'}</span></div>`}).join('');else{const d=KD[i],r=RES[i]||[];h=`<h3>${d.e} ผลด่าน ${d.k}</h3>`+d.q.map((q,j)=>`<div class="row"><span>${j+1}. ${isB(j)?'👑 ':''}${q.q.slice(0,40)}</span><span>${r[j]===undefined?'—':r[j]?'✅':'❌'}</span></div>`).join('')+`<p>ตอบถูก ${r.filter(x=>x).length}/10 ข้อ</p>`}show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
+function result(i){clearLevelScreen();let h;if(i=='all')h='<h3>📋 สรุปผลทุกด่าน'+(NAME?' ของ '+esc(NAME):'')+'</h3>'+KD.map((d,j)=>{const r=RES[j]||[],c=r.filter(x=>x).length;return `<div class="row"><span>${d.e} ${d.k}</span><span>${r.length?c+'/10 '+'⭐'.repeat(BEST[j]||0):'ยังไม่ได้เล่น'}</span></div>`}).join('');else{const d=KD[i],r=RES[i]||[];h=`<h3>${d.e} ผลด่าน ${d.k}</h3>`+d.q.map((q,j)=>`<div class="row"><span>${j+1}. ${isB(j)?'👑 ':''}${q.q.slice(0,40)}</span><span>${r[j]===undefined?'—':r[j]?'✅':'❌'}</span></div>`).join('')+`<p>ตอบถูก ${r.filter(x=>x).length}/10 ข้อ</p>`}show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
 
 function reportPage(){
  if(S&&S.res&&S.res.length)RES[K]=S.res.slice();
@@ -515,7 +597,7 @@ function sendReportToSheet(){
 
 let NAME='';const esc=s=>s.replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 function home(){
- reset();hud();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';
+ clearLevelScreen();reset();hud();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';
  $('#m').classList.add('home-screen');
  show(`<section class="cover-screen" aria-label="Kingdom Defense by KRUPOY">
    <div class="cover-frame">

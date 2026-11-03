@@ -583,7 +583,7 @@ body{background:radial-gradient(ellipse at 50% 0%,#e7fbff 0%,transparent 34%),li
   .hud span{padding:7px 3px;font-size:clamp(11px,3.2vw,14px);border-radius:12px!important}
   #cv{
     display:block;width:min(100%,420px)!important;height:auto!important;
-    aspect-ratio:9/16!important;max-height:none!important;flex:0 0 auto;
+    aspect-ratio:3/4!important;max-height:none!important;flex:0 0 auto;
     align-self:center;border-radius:20px!important;border-width:3px!important;
     touch-action:manipulation;
   }
@@ -941,16 +941,38 @@ document.addEventListener('click',e=>{
 
 const TY={mc:'ปรนัย',assign:'จับคู่/จำแนก',order:'เรียงลำดับ'};
 const TT=[{e:'🍄',n:'เห็ด',c:60,r:110,d:9,cd:600},{e:'🍞',n:'ราขนมปัง (ชะลอ)',c:90,r:95,d:3,cd:500,sl:1},{e:'🧫',n:'ยีสต์ (แรง)',c:120,r:140,d:26,cd:1300}];
-const cv=$('#cv'),ctx=cv.getContext('2d'),G=40,W=16,H=9;
-const BOARD_W=W*G,BOARD_H=H*G;
-let portraitBoard=false;
+const cv=$('#cv'),ctx=cv.getContext('2d'),G=40;
+let W=16,H=9,BOARD_W=W*G,BOARD_H=H*G,portraitBoard=false;
+let wp=[],pc=new Set(),pts=[];
+function buildRoute(){
+  if(portraitBoard){
+    // Route follows the winding road painted into the supplied portrait battlefield.
+    wp=[[28,602],[530,602],[530,514],[83,514],[83,304],[497,304],[497,197],[28,197]];
+    pts=wp.map(p=>p.slice());
+    pc=new Set();
+    // Mark every placement cell whose center overlaps the painted road.
+    for(let gy=0;gy<H;gy++)for(let gx=0;gx<W;gx++){
+      const px=gx*G+G/2,py=gy*G+G/2;
+      let near=false;
+      for(let i=0;i<pts.length-1&&!near;i++){
+        const [ax,ay]=pts[i],[bx,by]=pts[i+1],dx=bx-ax,dy=by-ay;
+        const t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/(dx*dx+dy*dy)));
+        near=Math.hypot(px-(ax+t*dx),py-(ay+t*dy))<36;
+      }
+      if(near)pc.add(gx+','+gy);
+    }
+  }else{
+    wp=[[0,1],[13,1],[13,4],[2,4],[2,7],[15,7]];
+    pc=new Set();
+    for(let i=0;i<wp.length-1;i++){let[a,b]=wp[i],[c,d]=wp[i+1],x=a,y=b;pc.add(x+','+y);while(x!=c||y!=d){x+=Math.sign(c-a);y+=Math.sign(d-b);pc.add(x+','+y)}}
+    pts=wp.map(([x,y])=>[x*G+G/2,y*G+G/2]);
+  }
+}
 function configureCanvas(){
   portraitBoard=matchMedia('(max-width:600px) and (orientation:portrait)').matches;
-  cv.width=portraitBoard?BOARD_H:BOARD_W;
-  cv.height=portraitBoard?BOARD_W:BOARD_H;
-  // Rotate the original 16×9 board into a tall phone layout without changing game coordinates.
-  if(portraitBoard)ctx.setTransform(0,-1,1,0,0,BOARD_W);
-  else ctx.setTransform(1,0,0,1,0,0);
+  W=portraitBoard?15:16;H=portraitBoard?20:9;BOARD_W=W*G;BOARD_H=H*G;
+  cv.width=BOARD_W;cv.height=BOARD_H;ctx.setTransform(1,0,0,1,0,0);
+  buildRoute();
 }
 configureCanvas();
 window.addEventListener('resize',configureCanvas,{passive:true});
@@ -979,6 +1001,7 @@ const ART={
   }
 };
 const ART_IMG={};
+const battlefieldImg=new Image();battlefieldImg.src='environment/kingdom-battlefield.png';
 function loadArt(key,src){
   const img=new Image();img.onload=()=>{ART_IMG[key]=img};img.onerror=()=>console.warn('Asset not found:',src);img.src=src;
 }
@@ -993,9 +1016,6 @@ function drawSprite(key,x,y,w,h){
   ctx.drawImage(img,x-w/2,y-h/2,w,h);return true;
 }
 
-const wp=[[0,1],[13,1],[13,4],[2,4],[2,7],[15,7]],pc=new Set();
-for(let i=0;i<wp.length-1;i++){let[a,b]=wp[i],[c,d]=wp[i+1],x=a,y=b;pc.add(x+','+y);while(x!=c||y!=d){x+=Math.sign(c-a);y+=Math.sign(d-b);pc.add(x+','+y)}}
-const pts=wp.map(([x,y])=>[x*G+G/2,y*G+G/2]);
 let S;
 function reset(){S={lives:10,coins:40,wave:0,speed:1,fast:1,correct:0,en:[],tw:[],bm:[],run:false,sel:0,left:0,sp:0,ans:0,res:[]}}
 function hud(){$('#hl').textContent='❤️ '+S.lives;$('#hc').textContent='🪙 '+S.coins;$('#hw').textContent='ข้อ '+Math.min(S.wave+1,10)+'/10'}
@@ -1005,7 +1025,7 @@ $('#tw').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.sel=+b.da
 function sel(){document.querySelectorAll('#tw button').forEach((b,i)=>b.classList.toggle('on',i==S.sel))}
 cv.onclick=e=>{
  const r=cv.getBoundingClientRect(),px=(e.clientX-r.left)*cv.width/r.width,py=(e.clientY-r.top)*cv.height/r.height;
- const x=Math.floor((portraitBoard?BOARD_W-py:px)/G),y=Math.floor((portraitBoard?px:py)/G),t=TT[S.sel];
+ const x=Math.floor(px/G),y=Math.floor(py/G),t=TT[S.sel];
 if(pc.has(x+','+y))return say('วางบนทางเดินไม่ได้');if(S.tw.some(o=>o.x==x&&o.y==y))return say('ช่องนี้มีป้อมแล้ว');if(S.coins<t.c)return say('เหรียญไม่พอ ตอบคำถามให้ถูกหรือกำจัดไวรัสเพื่อรับเหรียญเพิ่ม');
 S.coins-=t.c;S.tw.push({x,y,t,cd:0});hud()};
 function show(h){
@@ -1058,38 +1078,37 @@ if(S.lives<=0)end(false);else if(S.n>=S.left&&!S.en.length){S.run=false;$('#spee
 if(S)draw();requestAnimationFrame(loop)}
 function draw(){
  const now=performance.now()/1000;
- const bg=ctx.createLinearGradient(0,0,BOARD_W,BOARD_H);
- bg.addColorStop(0,'#b9e99a');bg.addColorStop(.48,'#8fd47e');bg.addColorStop(1,'#6fc18a');
- ctx.fillStyle=bg;ctx.fillRect(0,0,BOARD_W,BOARD_H);
- // Seamless fantasy grass texture, with a soft sunlit vignette.
- const grass=ART_IMG.grass;
- if(grass&&grass.complete&&grass.naturalWidth){const pat=ctx.createPattern(grass,'repeat');if(pat){ctx.save();ctx.globalAlpha=.30;ctx.fillStyle=pat;ctx.fillRect(0,0,BOARD_W,BOARD_H);ctx.restore();}}
- const glow=ctx.createRadialGradient(BOARD_W*.48,BOARD_H*.42,18,BOARD_W*.48,BOARD_H*.42,BOARD_W*.72);
- glow.addColorStop(0,'rgba(255,255,190,.16)');glow.addColorStop(1,'rgba(21,87,39,.10)');ctx.fillStyle=glow;ctx.fillRect(0,0,BOARD_W,BOARD_H);
- // Forest border decorations stay outside the main path and tower lanes.
- const forest=[['treeRound',22,24,58,70],['treePine',145,8,50,66],['treeBlossom',280,8,55,68],['treeRound',475,10,60,72],['treePine',610,26,52,70],['treeBlossom',20,318,58,72],['treeRound',165,326,56,68],['treePine',420,324,54,70],['treeBlossom',610,315,58,72]];
- forest.forEach(([key,x,y,w,h])=>{if(!drawSprite(key,x,y,w,h)){ctx.fillStyle='rgba(32,105,55,.18)';ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.fill();}});
- if(drawSprite('crystal',BOARD_W-52,BOARD_H*.53,36,42)){};
- // Soft grass texture and tiny flowers
- for(let y=14;y<H*G;y+=42)for(let x=12;x<W*G;x+=47){
-  if(!pc.has(Math.floor(x/G)+','+Math.floor(y/G))){
-   ctx.fillStyle='rgba(255,255,255,.13)';ctx.beginPath();ctx.arc(x+(y%3)*3,y,1.4,0,Math.PI*2);ctx.fill();
+ if(portraitBoard&&battlefieldImg.complete&&battlefieldImg.naturalWidth){
+  // The supplied 2:3 illustration is the actual battlefield; fit exactly to the portrait board.
+  ctx.drawImage(battlefieldImg,0,0,BOARD_W,BOARD_H);
+ }else{
+  const bg=ctx.createLinearGradient(0,0,BOARD_W,BOARD_H);
+  bg.addColorStop(0,'#b9e99a');bg.addColorStop(.48,'#8fd47e');bg.addColorStop(1,'#6fc18a');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,BOARD_W,BOARD_H);
+  const grass=ART_IMG.grass;
+  if(grass&&grass.complete&&grass.naturalWidth){const pat=ctx.createPattern(grass,'repeat');if(pat){ctx.save();ctx.globalAlpha=.30;ctx.fillStyle=pat;ctx.fillRect(0,0,BOARD_W,BOARD_H);ctx.restore();}}
+  const glow=ctx.createRadialGradient(BOARD_W*.48,BOARD_H*.42,18,BOARD_W*.48,BOARD_H*.42,BOARD_W*.72);
+  glow.addColorStop(0,'rgba(255,255,190,.16)');glow.addColorStop(1,'rgba(21,87,39,.10)');ctx.fillStyle=glow;ctx.fillRect(0,0,BOARD_W,BOARD_H);
+  const forest=[['treeRound',22,24,58,70],['treePine',145,8,50,66],['treeBlossom',280,8,55,68],['treeRound',475,10,60,72],['treePine',610,26,52,70],['treeBlossom',20,318,58,72],['treeRound',165,326,56,68],['treePine',420,324,54,70],['treeBlossom',610,315,58,72]];
+  forest.forEach(([key,x,y,w,h])=>{if(!drawSprite(key,x,y,w,h)){ctx.fillStyle='rgba(32,105,55,.18)';ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.fill();}});
+  drawSprite('crystal',BOARD_W-52,BOARD_H*.53,36,42);
+  for(let y=14;y<H*G;y+=42)for(let x=12;x<W*G;x+=47){
+   if(!pc.has(Math.floor(x/G)+','+Math.floor(y/G))){ctx.fillStyle='rgba(255,255,255,.13)';ctx.beginPath();ctx.arc(x+(y%3)*3,y,1.4,0,Math.PI*2);ctx.fill();}
   }
+  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+  ctx.strokeStyle='rgba(103,74,38,.28)';ctx.lineWidth=G*.91;ctx.stroke();
+  ctx.strokeStyle='#d7a95d';ctx.lineWidth=G*.76;ctx.stroke();
+  ctx.strokeStyle='#ffe5a0';ctx.lineWidth=G*.62;ctx.stroke();
+  ctx.strokeStyle='#fff0c8';ctx.lineWidth=G*.52;ctx.stroke();
+  ctx.setLineDash([8,12]);ctx.strokeStyle='rgba(255,255,255,.48)';ctx.lineWidth=2.5;ctx.stroke();ctx.setLineDash([]);ctx.restore();
  }
- // Path with a dark edge, warm center and dashed highlights
- ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
- ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
- ctx.strokeStyle='rgba(103,74,38,.28)';ctx.lineWidth=G*.91;ctx.stroke();
- ctx.strokeStyle='#d7a95d';ctx.lineWidth=G*.76;ctx.stroke();
- ctx.strokeStyle='#ffe5a0';ctx.lineWidth=G*.62;ctx.stroke();
- ctx.strokeStyle='#fff0c8';ctx.lineWidth=G*.52;ctx.stroke();
- ctx.setLineDash([8,12]);ctx.strokeStyle='rgba(255,255,255,.48)';ctx.lineWidth=2.5;ctx.stroke();ctx.setLineDash([]);
- ctx.restore();
- // Start and finish markers
- ctx.font='23px serif';ctx.textAlign='center';ctx.textBaseline='middle';
- ctx.fillText('🚪',pts[0][0],pts[0][1]-17);
- if(!drawSprite('princess',pts[0][0]+30,pts[0][1]+30,58,62)){ctx.font='27px serif';ctx.fillText('👸',pts[0][0]+30,pts[0][1]+25);}
- if(!drawSprite('castle',pts[pts.length-1][0],pts[pts.length-1][1]-15,54,54))ctx.fillText('🏰',pts[pts.length-1][0],pts[pts.length-1][1]-18);
+ // The portrait illustration already contains the distant castle and the road endpoints.
+ if(!portraitBoard){
+  ctx.font='23px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🚪',pts[0][0],pts[0][1]-17);
+  if(!drawSprite('princess',pts[0][0]+30,pts[0][1]+30,58,62)){ctx.font='27px serif';ctx.fillText('👸',pts[0][0]+30,pts[0][1]+25);}
+  if(!drawSprite('castle',pts[pts.length-1][0],pts[pts.length-1][1]-15,54,54))ctx.fillText('🏰',pts[pts.length-1][0],pts[pts.length-1][1]-18);
+ }
  // Tower pads and V2 tower sprites (fallback to the original icons if a PNG is missing)
  S.tw.forEach(t=>{
   const x=t.x*G+G/2,y=t.y*G+G/2;

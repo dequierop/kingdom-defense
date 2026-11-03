@@ -381,6 +381,96 @@ button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
  .level-hit{border-radius:8px!important}
 }
 
+
+
+/* ===== Unified 3D Chibi Fantasy screens + phone portrait layout ===== */
+.cover-picture{display:block;width:100%;height:100%}
+@media(max-width:600px) and (orientation:portrait){
+ #m.home-screen{overflow-y:auto;align-items:center}
+ #m.home-screen #mc{height:100dvh;min-height:100dvh;overflow:hidden}
+ .cover-screen{height:100dvh;min-height:100dvh;width:100vw;overflow:hidden}
+ .cover-frame{width:min(100vw,50dvh);height:min(100dvh,200vw);aspect-ratio:1/2;max-height:100dvh}
+ .cover-picture,.cover-art{width:100%;height:100%;display:block;object-fit:fill}
+ .cover-name-wrap{top:59%;width:70%}
+ .cover-name{height:clamp(30px,4.5dvh,40px);font-size:clamp(12px,3.2vw,15px)}
+ .start-hit{top:67%;width:75%;height:8.5%}
+ .how-hit{top:78%;width:65%;height:8%}
+ .settings-hit{top:88.5%;width:65%;height:8%}
+ #m.level-screen{overflow:hidden;background:#173e59}
+ #m.level-screen .level-card{width:min(100vw,50dvh);height:min(100dvh,200vw);aspect-ratio:1/2;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.32)}
+ .level-scene{display:none!important}
+ .mobile-level-scene{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#8bc9ed}
+ .mobile-level-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none}
+ .mobile-level-player{position:absolute;z-index:3;left:38%;top:26%;width:34%;font-size:clamp(8px,2.2vw,11px);font-weight:800;color:#714b87;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+ .mobile-level-hit{position:absolute;z-index:4;margin:0;padding:0!important;min-width:0!important;min-height:0!important;border:2px solid transparent!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;color:transparent!important;font-size:0!important;outline:none!important}
+ .mobile-level-hit:focus-visible{outline:3px solid #fff!important;background:rgba(255,255,255,.18)!important}
+ .mobile-level-row{left:7%;width:59%;height:7.2%}
+ .mobile-level-row.r0{top:29.1%}.mobile-level-row.r1{top:37.9%}.mobile-level-row.r2{top:46.7%}.mobile-level-row.r3{top:55.5%}.mobile-level-row.r4{top:64.3%}
+ .mobile-level-report,.mobile-level-chart{width:12%;height:7.2%}
+ .mobile-level-report{left:67%;}.mobile-level-chart{left:82%;}
+ .mobile-level-report.r0,.mobile-level-chart.r0{top:29.1%}.mobile-level-report.r1,.mobile-level-chart.r1{top:37.9%}.mobile-level-report.r2,.mobile-level-chart.r2{top:46.7%}.mobile-level-report.r3,.mobile-level-chart.r3{top:55.5%}.mobile-level-report.r4,.mobile-level-chart.r4{top:64.3%}
+ .mobile-level-summary{left:4%;top:73.5%;width:45%;height:8.2%}
+ .mobile-level-results{left:52%;top:73.5%;width:44%;height:8.2%}
+ .mobile-level-send{left:21%;top:83%;width:60%;height:8.2%}
+ .mobile-level-home{left:1%;top:90.5%;width:26%;height:8.5%}
+ #app{height:100dvh;min-height:0;max-width:100%;box-sizing:border-box;padding:5px 7px max(5px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:4px;overflow:hidden}
+ #app h1{font-size:clamp(14px,4vw,19px);line-height:1.15;margin:1px 0 3px;flex:0 0 auto}
+ .hud{gap:5px;margin:0 0 2px;flex:0 0 auto}
+ .hud span{padding:5px 2px;font-size:clamp(10px,2.8vw,13px);border-radius:10px}
+ #cv{width:100%;height:auto;max-height:min(36dvh,245px);aspect-ratio:16/9;object-fit:contain;flex:0 1 auto;min-height:0;border-radius:11px}
+ .tw{gap:5px;margin:2px 0;flex:0 0 auto}
+ .tw button{min-height:48px;padding:5px 2px;font-size:clamp(9px,2.5vw,11px);border-radius:10px;line-height:1.25}
+ #msg{min-height:16px;font-size:11px;line-height:1.2;flex:0 0 auto}
+ .actionbar{display:grid;grid-template-columns:1.15fr .8fr .9fr;gap:5px;margin:0;flex:0 0 auto}
+ .actionbar button{min-width:0;min-height:38px;padding:5px 3px;font-size:clamp(10px,2.7vw,12px);border-radius:10px}
+ .soundbar{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:0;flex:0 0 auto}
+ .soundbar button{min-height:32px;padding:4px;font-size:10px;border-radius:9px}
+ .game-credit{font-size:9px;margin:0;padding:3px 0 0;flex:0 0 auto}
+}
+
+/* Quiz modal: parchment quest card, responsive matching rows and clear feedback. */
+#m.question-modal{align-items:center;justify-content:center;padding:12px;background:rgba(44,32,60,.56);backdrop-filter:blur(8px)}
+#mc.question-card{width:min(620px,100%);max-width:620px;max-height:92dvh;overflow:auto;padding:clamp(16px,3vw,24px);border:3px solid #fff3d5;border-radius:24px;background:linear-gradient(155deg,#fffdf5,#fff0d8 58%,#f4eaff);box-shadow:0 16px 48px rgba(70,43,85,.28);color:#4d3b62}
+.question-panel{display:flex;flex-direction:column;gap:10px}
+.question-topline{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.question-stage,.question-count{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:#f1e4ff;color:#76539a;font-size:12px;font-weight:800}
+.question-count{background:#fff0c9;color:#8b6025}
+.question-progress{height:8px;border-radius:999px;background:#eadff0;overflow:hidden}
+.question-progress span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#a77acb,#f2bd62);transition:width .25s ease}
+.question-title{margin:2px 0 4px!important;padding:10px 12px;border-radius:16px;background:linear-gradient(135deg,#fff,#f8edff);border:1px solid #ead8ee;color:#79549a!important;font-size:clamp(17px,3.5vw,22px)!important;line-height:1.45!important}
+.question-body{display:flex;flex-direction:column;gap:8px}
+.answer-option{width:100%;min-height:48px;text-align:left;padding:10px 13px;border-radius:14px;border:1px solid #ead8ee;background:linear-gradient(180deg,#fff,#f8efff);box-shadow:0 3px 0 #e7d8ee;color:#514266;font-size:14px}
+.question-match-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,42%);gap:10px;align-items:center;padding:8px 10px;border-radius:13px;background:rgba(255,255,255,.72);border:1px solid #f0dfc4}
+.question-match-label{font-size:14px;line-height:1.4;color:#594b68}
+.question-match-row select{width:100%;max-width:none;min-width:0;font-size:13px;padding:9px 8px;border-radius:11px;background:#fff;border:1px solid #d9c5e8}
+.question-check{width:100%;min-height:46px;border-radius:999px!important;background:linear-gradient(180deg,#4fca78,#249653)!important;box-shadow:0 4px 0 #187443!important;border-color:#fff!important;color:white!important}
+.question-order-label{margin:2px 0;padding:9px 11px;border-radius:12px;background:#f3eaff;color:#76539a;font-weight:700}
+.question-order-options{display:flex;flex-wrap:wrap;gap:7px}
+.question-order-options button,.question-clear{font-size:13px;min-height:40px}
+.question-feedback{padding:0 2px;color:#594b68;line-height:1.6}
+.question-feedback:empty{display:none}
+.question-feedback p{margin:5px 0}
+.question-exit{display:block;width:100%;margin:10px 0 0;min-height:42px;border-radius:999px!important;background:linear-gradient(#fff,#f6eefa)!important;color:#725d80!important;border:1px solid #e5d4ec!important;box-shadow:0 3px 0 #e4d5e9!important}
+@media(max-width:600px) and (orientation:portrait){
+ #m.question-modal{padding:8px;align-items:center}
+ #mc.question-card{width:min(100%,500px);max-height:94dvh;padding:12px 11px;border-radius:19px;border-width:2px}
+ .question-panel{gap:7px}
+ .question-stage,.question-count{font-size:10px;padding:5px 8px}
+ .question-title{font-size:clamp(15px,4.2vw,18px)!important;padding:8px 10px;border-radius:13px}
+ .question-body{gap:6px}
+ .question-match-row{grid-template-columns:minmax(0,1fr) minmax(112px,43%);gap:6px;padding:6px 7px}
+ .question-match-label{font-size:clamp(11px,3.1vw,13px);line-height:1.3}
+ .question-match-row select{font-size:clamp(11px,3vw,13px);padding:7px 5px;min-height:38px}
+ .answer-option{font-size:13px;min-height:42px;padding:8px 10px}
+ .question-check{min-height:42px}
+ .question-exit{min-height:38px;margin-top:6px;font-size:12px}
+}
+@media(max-height:680px) and (orientation:portrait){
+ #mc.question-card{max-height:96dvh;padding:9px}
+ .question-panel{gap:5px}.question-match-row{padding:4px 6px}
+ .question-match-row select{min-height:34px;padding:5px}
+}
+
 </style></head><body><div id="app">
 <h1>🌍 Kingdom Defense by KRUPOY</h1>
 <div class="hud"><span id="hl">❤️ 10</span><span id="hc">🪙 60</span><span id="hw">ข้อ 1/10</span></div>
@@ -521,37 +611,48 @@ const tb=()=>{$('#tw').innerHTML=TT.map((t,i)=>`<button data-i="${i}">${t.e} ${t
 function summary(i){clearLevelScreen();const d=KD[i];let h;if(i=='all')h=`<h3>🗺️ สรุปภาพรวม 5 อาณาจักร</h3><div style="overflow-x:auto"><table class="tb"><tr><th></th>${KD.map(x=>`<th>${x.e}<br>${x.k}</th>`).join('')}</tr>${ALL.map(r=>`<tr><th>${r[0]}</th>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;else h=`<h3>${d.e} สรุป ${d.k}</h3><div class="gr">${d.sum.map(s=>`<div class="sc"><div class="em">${s[0]}</div><b>${s[1]}</b><div>${s[2]}</div></div>`).join('')}</div>`;show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
 function play(i){clearLevelScreen();K=i;Q=KD[i].q;TT.forEach((t,j)=>{t.e=KD[i].tw[j][0];t.n=KD[i].tw[j][1]});reset();S.in=1;tb();hud();sel();ask()}
 function clearLevelScreen(){
- $('#m').classList.remove('level-screen');
- $('#mc').classList.remove('level-card');
+ $('#m').classList.remove('level-screen','question-modal');
+ $('#mc').classList.remove('level-card','question-card');
 }
 function intro(){
- $('#m').classList.remove('home-screen');
- $('#mc').classList.remove('home-card');
+ $('#m').classList.remove('home-screen','question-modal');
+ $('#mc').classList.remove('home-card','question-card');
  reset();hud();sel();$('#go').disabled=true;$('#speed').disabled=true;$('#speed').textContent='⏩ 1×';
- $('#m').classList.add('level-screen');
- $('#mc').classList.add('level-card');
- const rows=KD.map((d,i)=>`
-  <button class="level-hit level-row r${i}" data-p="${i}" aria-label="เริ่มด่าน ${d.k}: ${d.n}" title="เริ่มด่าน ${d.k}"></button>
-  <button class="level-hit level-report r${i}" data-r="${i}" aria-label="ดูผลด่าน ${d.k}" title="ดูผลด่าน"></button>
-  <button class="level-hit level-chart r${i}" data-s="${i}" aria-label="ดูสรุป ${d.k}" title="ดูสรุป"></button>
- `).join('');
- show(`<section class="level-scene" aria-label="เลือกด่านเรียนรู้ Kingdom Defense">
-  <img class="level-scene-art" src="kingdom-level-select.png" alt="หน้าจอเลือกด่าน Kingdom Defense ธีมอาณาจักรแฟนตาซี">
-  <div class="level-name">${NAME?'ผู้เล่น: '+esc(NAME):''}</div>
-  ${rows}
-  <button class="level-hit level-summary" data-s="all" aria-label="สรุปภาพรวม 5 อาณาจักร"></button>
-  <button class="level-hit level-results" data-r="all" aria-label="สรุปผลทุกด่าน"></button>
-  <button class="level-hit level-send" data-report="1" aria-label="บันทึกผลส่งครู"></button>
-  <button class="level-hit level-home" data-h="1" aria-label="กลับหน้าปก"></button>
- </section>`);
+ $('#m').classList.add('level-screen');$('#mc').classList.add('level-card');
+ const mobile=window.matchMedia('(max-width:600px) and (orientation:portrait)').matches;
+ if(mobile){
+  const mobileHits=KD.map((d,i)=>`<button class="mobile-level-hit mobile-level-row r${i}" data-p="${i}" aria-label="เริ่มด่าน ${d.k}"></button><button class="mobile-level-hit mobile-level-report r${i}" data-r="${i}" aria-label="ดูผล ${d.k}"></button><button class="mobile-level-hit mobile-level-chart r${i}" data-s="${i}" aria-label="ดูสรุป ${d.k}"></button>`).join('');
+  show(`<section class="mobile-level-scene" aria-label="เลือกด่านเรียนรู้">
+   <img class="mobile-level-art" src="kingdom-level-select-mobile.png" alt="หน้าจอเลือกด่าน Kingdom Defense">
+   <div class="mobile-level-player">${NAME?'ผู้เล่น: '+esc(NAME):''}</div>
+   ${mobileHits}
+   <button class="mobile-level-hit mobile-level-summary" data-s="all" aria-label="สรุปภาพรวม 5 อาณาจักร"></button>
+   <button class="mobile-level-hit mobile-level-results" data-r="all" aria-label="สรุปผลทุกด่าน"></button>
+   <button class="mobile-level-hit mobile-level-send" data-report="1" aria-label="บันทึกผลส่งครู"></button>
+   <button class="mobile-level-hit mobile-level-home" data-h="1" aria-label="กลับหน้าปก"></button>
+  </section>`);
+ }else{
+  const rows=KD.map((d,i)=>`
+   <button class="level-hit level-row r${i}" data-p="${i}" aria-label="เริ่มด่าน ${d.k}: ${d.n}" title="เริ่มด่าน ${d.k}"></button>
+   <button class="level-hit level-report r${i}" data-r="${i}" aria-label="ดูผลด่าน ${d.k}" title="ดูผลด่าน"></button>
+   <button class="level-hit level-chart r${i}" data-s="${i}" aria-label="ดูสรุป ${d.k}" title="ดูสรุป"></button>
+  `).join('');
+  show(`<section class="level-scene" aria-label="เลือกด่านเรียนรู้ Kingdom Defense">
+   <img class="level-scene-art" src="kingdom-level-select.png" alt="หน้าจอเลือกด่าน Kingdom Defense ธีมอาณาจักรแฟนตาซี">
+   <div class="level-name">${NAME?'ผู้เล่น: '+esc(NAME):''}</div>${rows}
+   <button class="level-hit level-summary" data-s="all" aria-label="สรุปภาพรวม 5 อาณาจักร"></button>
+   <button class="level-hit level-results" data-r="all" aria-label="สรุปผลทุกด่าน"></button>
+   <button class="level-hit level-send" data-report="1" aria-label="บันทึกผลส่งครู"></button>
+   <button class="level-hit level-home" data-h="1" aria-label="กลับหน้าปก"></button>
+  </section>`);
+ }
  $('#mc').onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
-  AudioFX.click();
-  if(b.dataset.p!=null)play(+b.dataset.p);
-  else if(b.dataset.s!=null)summary(b.dataset.s);
-  else if(b.dataset.r!=null)result(b.dataset.r);
-  else if(b.dataset.report)reportPage();
-  else if(b.dataset.h)home();
+  if(b.dataset.p!=null){AudioFX.click();play(+b.dataset.p)}
+  else if(b.dataset.s!=null){AudioFX.click();summary(b.dataset.s)}
+  else if(b.dataset.r!=null){AudioFX.click();result(b.dataset.r)}
+  else if(b.dataset.report){AudioFX.click();reportPage()}
+  else if(b.dataset.h){AudioFX.click();home()}
  };
 }
 const RES={};function leave(){if(S.in)RES[K]=S.res.slice();intro()}
@@ -601,7 +702,10 @@ function home(){
  $('#m').classList.add('home-screen');
  show(`<section class="cover-screen" aria-label="Kingdom Defense by KRUPOY">
    <div class="cover-frame">
-    <img class="cover-art" src="kingdom-cover.png" alt="Kingdom Defense fantasy kingdom game cover">
+    <picture class="cover-picture">
+     <source media="(max-width:600px) and (orientation:portrait)" srcset="kingdom-cover-mobile.png">
+     <img class="cover-art" src="kingdom-cover.png" alt="Kingdom Defense fantasy kingdom game cover">
+    </picture>
     <label class="cover-name-wrap"><span class="sr-only">ชื่อนักปกป้องอาณาจักร</span><input class="cover-name" id="nm" maxlength="30" placeholder="ชื่อผู้เล่น" value="${esc(NAME)}" autocomplete="name"></label>
     <button class="cover-hit start-hit" id="gs" aria-label="เริ่มเกม">เริ่มเกม</button>
     <button class="cover-hit how-hit" id="gh" aria-label="วิธีเล่น">วิธีเล่น</button>
@@ -749,19 +853,31 @@ function sel(){document.querySelectorAll('#tw button').forEach((b,i)=>b.classLis
 cv.onclick=e=>{const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)*cv.width/r.width/G),y=Math.floor((e.clientY-r.top)*cv.height/r.height/G),t=TT[S.sel];
 if(pc.has(x+','+y))return say('วางบนทางเดินไม่ได้');if(S.tw.some(o=>o.x==x&&o.y==y))return say('ช่องนี้มีป้อมแล้ว');if(S.coins<t.c)return say('เหรียญไม่พอ ตอบคำถามให้ถูกหรือกำจัดไวรัสเพื่อรับเหรียญเพิ่ม');
 S.coins-=t.c;S.tw.push({x,y,t,cd:0});hud()};
-function show(h){$('#mc').innerHTML=h+(S&&S.in?'<button id="ex" style="margin-top:10px">✖ ออกจากด่าน</button>':'');$('#m').style.display='flex';const x=$('#ex');if(x)x.onclick=leave}
+function show(h){
+ const isQuestion=h.includes('class="question-panel"');
+ if(!isQuestion){$('#mc').classList.remove('question-card');$('#m').classList.remove('question-modal')}
+ $('#mc').innerHTML=h+(S&&S.in?'<button id="ex" class="question-exit">✕ ออกจากด่าน</button>':'');
+ $('#m').style.display='flex';const x=$('#ex');if(x)x.onclick=leave;
+}
 function hide(){$('#m').style.display='none'}
 function intro0(){reset();hud();sel();$('#go').disabled=true;show(`<h3>🍄 ด่านอาณาจักร Fungi</h3><p>ไวรัสกำลังบุกเข้ามา! เริ่มต้นได้รับทุน 40 เหรียญ ตอบคำถามให้ถูกและกำจัดไวรัสเพื่อรับเหรียญไปซื้อป้อมช่วยป้องกันอาณาจักร (เหรียญจากการกำจัดไวรัสใช้ซื้อป้อมเท่านั้น ไม่เพิ่มคะแนนหรือดาว) ทั้งหมด 10 ข้อ 10 เวฟ ด่าน 7 มีบอส 5 ตัว และด่าน 10 มีบอส 8 ตัว<br>ตอบผิด = ศัตรูเร็วขึ้น</p><button class="go" id="st">เริ่มเกม ▶</button>`);$('#st').onclick=ask}
 function ask(){const q=Q[S.wave];S.ans=0;
-show(`<div class="tag">${isB(S.wave)?'👑 บอส · ':''}ข้อ ${S.wave+1}/10 · ${TY[q.t]}</div><h3>${q.q}</h3><div id="bd"></div><div id="fb"></div>`);const b=$('#bd');
-if(q.t=='mc')sh(q.o.map((t,i)=>[t,i==q.a])).forEach(([t,ok])=>{const x=document.createElement('button');x.className='opt';x.innerHTML=t;x.onclick=()=>done(ok,ok?'':'<br>เฉลย: '+q.o[q.a]);b.append(x)});
-else if(q.t=='assign'){q.i.forEach(t=>{const r=document.createElement('div');r.className='row';
-const optionOrder=sh(q.o.map((o,j)=>j));
-r.innerHTML=`<span>${t}</span><select><option value="-1">— เลือก —</option>${optionOrder.map(j=>`<option value="${j}">${q.o[j]}</option>`).join('')}</select>`;b.append(r)});
-const c=document.createElement('button');c.className='go';c.textContent='ตรวจคำตอบ';c.onclick=()=>{const v=[...b.querySelectorAll('select')].map(s=>+s.value);if(v.includes(-1))return say2('ยังเลือกไม่ครบทุกข้อ');const ok=v.every((x,i)=>x==q.a[i]);done(ok,ok?'':'<br>เฉลย: '+q.i.map((t,i)=>t+' → '+q.o[q.a[i]]).join(', '))};b.append(c)}
-else{const pk=[],ln=document.createElement('p'),ch=document.createElement('div');ch.className='chips';ln.textContent='ลำดับของคุณ: -';b.append(ln,ch);
-sh(q.i).forEach(t=>{const x=document.createElement('button');x.textContent=t;x.onclick=()=>{x.disabled=true;pk.push(t);ln.textContent='ลำดับของคุณ: '+pk.join(' → ');if(pk.length==q.i.length){const ok=pk.every((v,i)=>v==q.i[i]);done(ok,ok?'':'<br>ลำดับที่ถูก: '+q.i.join(' → '))}};ch.append(x)});
-const r=document.createElement('button');r.textContent='↺ ล้าง';r.onclick=ask;b.append(r)}}
+ $('#mc').classList.add('question-card');$('#m').classList.add('question-modal');
+ show(`<section class="question-panel">
+  <div class="question-topline"><span class="question-stage">${KD[K].e} ${KD[K].k}</span><span class="question-count">${isB(S.wave)?'👑 บอส · ':''}ข้อ ${S.wave+1}/10</span></div>
+  <div class="question-progress"><span style="width:${(S.wave+1)*10}%"></span></div>
+  <h3 class="question-title">${q.q}</h3>
+  <div id="bd" class="question-body"></div><div id="fb" class="question-feedback"></div>
+ </section>`);const b=$('#bd');
+ if(q.t=='mc')sh(q.o.map((t,i)=>[t,i==q.a])).forEach(([t,ok])=>{const x=document.createElement('button');x.className='opt answer-option';x.innerHTML=t;x.onclick=()=>done(ok,ok?'':'<br>เฉลย: '+q.o[q.a]);b.append(x)});
+ else if(q.t=='assign'){q.i.forEach(t=>{const r=document.createElement('div');r.className='question-match-row';
+ const optionOrder=sh(q.o.map((o,j)=>j));
+ r.innerHTML=`<span class="question-match-label">${t}</span><select><option value="-1">— เลือก —</option>${optionOrder.map(j=>`<option value="${j}">${q.o[j]}</option>`).join('')}</select>`;b.append(r)});
+ const c=document.createElement('button');c.className='go question-check';c.textContent='✓ ตรวจคำตอบ';c.onclick=()=>{const v=[...b.querySelectorAll('select')].map(s=>+s.value);if(v.includes(-1))return say2('ยังเลือกไม่ครบทุกข้อ');const ok=v.every((x,i)=>x==q.a[i]);done(ok,ok?'':'<br>เฉลย: '+q.i.map((t,i)=>t+' → '+q.o[q.a[i]]).join(', '))};b.append(c)}
+ else{const pk=[],ln=document.createElement('p'),ch=document.createElement('div');ch.className='chips question-order-options';ln.className='question-order-label';ln.textContent='ลำดับของคุณ: -';b.append(ln,ch);
+ sh(q.i).forEach(t=>{const x=document.createElement('button');x.textContent=t;x.onclick=()=>{x.disabled=true;pk.push(t);ln.textContent='ลำดับของคุณ: '+pk.join(' → ');if(pk.length==q.i.length){const ok=pk.every((v,i)=>v==q.i[i]);done(ok,ok?'':'<br>ลำดับที่ถูก: '+q.i.join(' → '))}};ch.append(x)});
+ const r=document.createElement('button');r.textContent='↺ ล้าง';r.className='question-clear';r.onclick=ask;b.append(r)}
+}
 function say2(t){$('#fb').innerHTML='<p class="r">'+t+'</p>'}
 function done(ok,ex){if(S.ans)return;S.ans=1;if(ok)AudioFX.success();else AudioFX.error();S.res[S.wave]=ok;const q=Q[S.wave],rw=isB(S.wave)?60:30;
 if(ok){S.correct++;S.coins+=rw}else S.speed=Math.min(1.6,S.speed+.1);

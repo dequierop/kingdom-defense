@@ -570,6 +570,46 @@ body{background:radial-gradient(ellipse at 50% 0%,#e7fbff 0%,transparent 34%),li
  .answer-option{font-size:13px;min-height:48px}
 }
 
+
+/* ===== Mobile portrait battlefield: rotate the existing 16×9 board, preserve gameplay logic ===== */
+@media(max-width:600px) and (orientation:portrait){
+  #app{
+    max-width:520px!important;min-height:100dvh;height:auto!important;
+    overflow:visible!important;display:flex;flex-direction:column;
+    gap:7px;padding:8px 10px max(18px,env(safe-area-inset-bottom))!important;
+  }
+  #app>h1{font-size:clamp(17px,4.8vw,22px);margin:3px 0 5px;line-height:1.2}
+  .hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0}
+  .hud span{padding:7px 3px;font-size:clamp(11px,3.2vw,14px);border-radius:12px!important}
+  #cv{
+    display:block;width:min(100%,420px)!important;height:auto!important;
+    aspect-ratio:9/16!important;max-height:none!important;flex:0 0 auto;
+    align-self:center;border-radius:20px!important;border-width:3px!important;
+    touch-action:manipulation;
+  }
+  .tw{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+    margin:2px 0 0;padding:9px;border-radius:17px;
+  }
+  .tw:before{font-size:14px}
+  .tw button.tower-choice,.tw button{
+    min-width:0;min-height:68px;padding:7px 3px;font-size:clamp(10px,2.8vw,12px);
+    line-height:1.25;border-radius:13px;
+  }
+  .tower-emoji{font-size:27px}
+  .tower-name{font-size:11px}
+  .tower-price{font-size:10px}
+  #msg{min-height:20px;margin:0;font-size:12px;line-height:1.35}
+  .actionbar{display:grid;grid-template-columns:1.2fr .8fr .9fr;gap:7px;margin:0;padding:7px;border-radius:16px}
+  .actionbar button{min-width:0;min-height:44px;padding:7px 3px;font-size:clamp(10px,2.8vw,13px)}
+  .soundbar{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0}
+  .soundbar button{min-height:38px;font-size:11px}
+  .game-credit{font-size:10px;margin:0;padding:5px 0 0}
+}
+@media(min-width:601px){
+  #cv{aspect-ratio:16/9}
+}
+
 </style></head><body><div id="app">
 <h1>🌍 Kingdom Defense by KRUPOY</h1>
 <div class="hud"><span id="hl">❤️ 10</span><span id="hc">🪙 60</span><span id="hw">ข้อ 1/10</span></div>
@@ -901,7 +941,19 @@ document.addEventListener('click',e=>{
 
 const TY={mc:'ปรนัย',assign:'จับคู่/จำแนก',order:'เรียงลำดับ'};
 const TT=[{e:'🍄',n:'เห็ด',c:60,r:110,d:9,cd:600},{e:'🍞',n:'ราขนมปัง (ชะลอ)',c:90,r:95,d:3,cd:500,sl:1},{e:'🧫',n:'ยีสต์ (แรง)',c:120,r:140,d:26,cd:1300}];
-const cv=$('#cv'),ctx=cv.getContext('2d'),G=40,W=16,H=9;cv.width=W*G;cv.height=H*G;
+const cv=$('#cv'),ctx=cv.getContext('2d'),G=40,W=16,H=9;
+const BOARD_W=W*G,BOARD_H=H*G;
+let portraitBoard=false;
+function configureCanvas(){
+  portraitBoard=matchMedia('(max-width:600px) and (orientation:portrait)').matches;
+  cv.width=portraitBoard?BOARD_H:BOARD_W;
+  cv.height=portraitBoard?BOARD_W:BOARD_H;
+  // Rotate the original 16×9 board into a tall phone layout without changing game coordinates.
+  if(portraitBoard)ctx.setTransform(0,-1,1,0,0,BOARD_W);
+  else ctx.setTransform(1,0,0,1,0,0);
+}
+configureCanvas();
+window.addEventListener('resize',configureCanvas,{passive:true});
 // V2 artwork loader: keeps the original game mechanics and falls back to Canvas drawings if an image is unavailable.
 const ART={
   castle:'environment/castle.png',
@@ -951,7 +1003,9 @@ function say(t){$('#msg').textContent=t;setTimeout(()=>{if($('#msg').textContent
 $('#tw').innerHTML=TT.map((t,i)=>`<button data-i="${i}">${t.e} ${t.n}<br>🪙${t.c}</button>`).join('');
 $('#tw').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.sel=+b.dataset.i;sel()};
 function sel(){document.querySelectorAll('#tw button').forEach((b,i)=>b.classList.toggle('on',i==S.sel))}
-cv.onclick=e=>{const r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)*cv.width/r.width/G),y=Math.floor((e.clientY-r.top)*cv.height/r.height/G),t=TT[S.sel];
+cv.onclick=e=>{
+ const r=cv.getBoundingClientRect(),px=(e.clientX-r.left)*cv.width/r.width,py=(e.clientY-r.top)*cv.height/r.height;
+ const x=Math.floor((portraitBoard?BOARD_W-py:px)/G),y=Math.floor((portraitBoard?px:py)/G),t=TT[S.sel];
 if(pc.has(x+','+y))return say('วางบนทางเดินไม่ได้');if(S.tw.some(o=>o.x==x&&o.y==y))return say('ช่องนี้มีป้อมแล้ว');if(S.coins<t.c)return say('เหรียญไม่พอ ตอบคำถามให้ถูกหรือกำจัดไวรัสเพื่อรับเหรียญเพิ่ม');
 S.coins-=t.c;S.tw.push({x,y,t,cd:0});hud()};
 function show(h){
@@ -1004,18 +1058,18 @@ if(S.lives<=0)end(false);else if(S.n>=S.left&&!S.en.length){S.run=false;$('#spee
 if(S)draw();requestAnimationFrame(loop)}
 function draw(){
  const now=performance.now()/1000;
- const bg=ctx.createLinearGradient(0,0,cv.width,cv.height);
+ const bg=ctx.createLinearGradient(0,0,BOARD_W,BOARD_H);
  bg.addColorStop(0,'#b9e99a');bg.addColorStop(.48,'#8fd47e');bg.addColorStop(1,'#6fc18a');
- ctx.fillStyle=bg;ctx.fillRect(0,0,cv.width,cv.height);
+ ctx.fillStyle=bg;ctx.fillRect(0,0,BOARD_W,BOARD_H);
  // Seamless fantasy grass texture, with a soft sunlit vignette.
  const grass=ART_IMG.grass;
- if(grass&&grass.complete&&grass.naturalWidth){const pat=ctx.createPattern(grass,'repeat');if(pat){ctx.save();ctx.globalAlpha=.30;ctx.fillStyle=pat;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();}}
- const glow=ctx.createRadialGradient(cv.width*.48,cv.height*.42,18,cv.width*.48,cv.height*.42,cv.width*.72);
- glow.addColorStop(0,'rgba(255,255,190,.16)');glow.addColorStop(1,'rgba(21,87,39,.10)');ctx.fillStyle=glow;ctx.fillRect(0,0,cv.width,cv.height);
+ if(grass&&grass.complete&&grass.naturalWidth){const pat=ctx.createPattern(grass,'repeat');if(pat){ctx.save();ctx.globalAlpha=.30;ctx.fillStyle=pat;ctx.fillRect(0,0,BOARD_W,BOARD_H);ctx.restore();}}
+ const glow=ctx.createRadialGradient(BOARD_W*.48,BOARD_H*.42,18,BOARD_W*.48,BOARD_H*.42,BOARD_W*.72);
+ glow.addColorStop(0,'rgba(255,255,190,.16)');glow.addColorStop(1,'rgba(21,87,39,.10)');ctx.fillStyle=glow;ctx.fillRect(0,0,BOARD_W,BOARD_H);
  // Forest border decorations stay outside the main path and tower lanes.
  const forest=[['treeRound',22,24,58,70],['treePine',145,8,50,66],['treeBlossom',280,8,55,68],['treeRound',475,10,60,72],['treePine',610,26,52,70],['treeBlossom',20,318,58,72],['treeRound',165,326,56,68],['treePine',420,324,54,70],['treeBlossom',610,315,58,72]];
  forest.forEach(([key,x,y,w,h])=>{if(!drawSprite(key,x,y,w,h)){ctx.fillStyle='rgba(32,105,55,.18)';ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.fill();}});
- if(drawSprite('crystal',cv.width-52,cv.height*.53,36,42)){};
+ if(drawSprite('crystal',BOARD_W-52,BOARD_H*.53,36,42)){};
  // Soft grass texture and tiny flowers
  for(let y=14;y<H*G;y+=42)for(let x=12;x<W*G;x+=47){
   if(!pc.has(Math.floor(x/G)+','+Math.floor(y/G))){

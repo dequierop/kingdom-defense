@@ -15,6 +15,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans Thai",
 h1{font-size:18px;margin:4px 0}
 .hud{display:flex;justify-content:space-between;gap:8px;font-weight:700;margin:6px 0}
 canvas{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--bd);touch-action:manipulation}
+#cv{width:100%;height:auto;aspect-ratio:3/4;max-width:600px;margin:0 auto;display:block}
 .tw{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
 button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:8px;padding:8px 10px}
 button.on{border-color:var(--ac);outline:2px solid var(--ac)}
@@ -969,8 +970,10 @@ function buildRoute(){
   }
 }
 function configureCanvas(){
-  portraitBoard=matchMedia('(max-width:600px) and (orientation:portrait)').matches;
-  W=portraitBoard?15:16;H=portraitBoard?20:9;BOARD_W=W*G;BOARD_H=H*G;
+  // Use the supplied portrait battlefield on every device so the painted road,
+  // enemy route, and canvas proportions always match (3:4 artwork).
+  portraitBoard=true;
+  W=15;H=20;BOARD_W=W*G;BOARD_H=H*G;
   cv.width=BOARD_W;cv.height=BOARD_H;ctx.setTransform(1,0,0,1,0,0);
   buildRoute();
 }

@@ -508,6 +508,68 @@ button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
  #m.report-modal #backReport{width:100%;min-height:44px;margin-top:8px}
 }
 
+
+/* ===== Kingdom Defense: storybook fantasy gameplay skin ===== */
+:root{--quest-gold:#e9b64e;--quest-deep:#87521e;--quest-cream:#fff2d1;--quest-green:#2d8b45;--quest-wood:#9b5425}
+body{background:radial-gradient(ellipse at 50% 0%,#e7fbff 0%,transparent 34%),linear-gradient(180deg,#bfeaff 0%,#e7f7d6 45%,#fff0cf 100%)}
+#app{max-width:760px}
+#app>h1{color:#7c4a9d;text-shadow:0 2px 0 #fff,0 4px 0 rgba(255,255,255,.55);font-weight:900;letter-spacing:.2px}
+.hud span{border:2px solid #fff3cf!important;border-radius:16px!important;background:linear-gradient(180deg,#fffef8,#ffe9b4)!important;box-shadow:0 4px 0 #d6a65b,0 6px 12px rgba(93,69,38,.12)!important;color:#553a28!important;font-weight:900}
+#cv{border:4px solid #fff8df!important;border-radius:24px!important;box-shadow:0 7px 0 #d3a75d,0 12px 24px rgba(72,108,51,.2)!important;background:#91d77d}
+.tw{padding:10px;border:3px solid #fff4d3;border-radius:22px;background:linear-gradient(180deg,#fff0c8,#f5cf87);box-shadow:0 5px 0 #d7a65a,0 8px 16px rgba(100,66,29,.12)}
+.tw:before{content:'🌿 เลือกหอคอยป้องกัน';grid-column:1/-1;text-align:center;font-size:clamp(14px,3.5vw,18px);font-weight:900;color:#79451e;text-shadow:0 1px 0 #fff}
+.tw button.tower-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:92px;padding:6px 4px;border:2px solid #f4d69a!important;border-radius:17px!important;background:linear-gradient(180deg,#fffefa,#fff0d4)!important;box-shadow:0 4px 0 #d5a85e,0 6px 10px rgba(112,73,29,.1)!important;color:#563b2a!important}
+.tw button.tower-choice.on{border:3px solid #53a93d!important;background:linear-gradient(180deg,#f4ffe8,#dff4c9)!important;outline:3px solid rgba(83,169,61,.18)!important;transform:translateY(-2px)}
+.tower-emoji{font-size:clamp(25px,7vw,38px);line-height:1.1;filter:drop-shadow(0 3px 2px rgba(80,60,35,.16))}
+.tower-name{font-size:clamp(10px,2.8vw,13px);font-weight:900;line-height:1.25}
+.tower-price{font-size:clamp(10px,2.6vw,12px);font-weight:900;color:#9b681e}
+#msg{background:rgba(255,255,255,.76);border-radius:12px;padding:4px 8px;color:#a33d46!important}
+.actionbar{padding:7px;border:2px solid #fff2cc;border-radius:20px;background:linear-gradient(180deg,#fff4d7,#f7dba4);box-shadow:0 4px 0 #d6a65c}
+.actionbar button{border-radius:16px!important;min-height:48px;font-weight:900}
+.actionbar #go{background:linear-gradient(180deg,#68d54a,#269c34)!important;border:2px solid #f2ffcf!important;box-shadow:0 5px 0 #176c2d!important;color:white!important;text-shadow:0 2px 2px rgba(0,0,0,.25)}
+.actionbar #speed{background:linear-gradient(180deg,#d8b4ff,#9b60d6)!important;color:#fff!important;border:2px solid #f5e6ff!important;box-shadow:0 4px 0 #7040a8!important}
+.actionbar #mn{background:linear-gradient(180deg,#fff,#f4e9ff)!important;border:2px solid #e8d4f5!important;box-shadow:0 4px 0 #c8a8df!important}
+.soundbar button{border:2px solid #fff!important;border-radius:14px!important;background:linear-gradient(180deg,#fff,#e8f4ff)!important;box-shadow:0 3px 0 #b7cde0!important;font-weight:800}
+.game-credit{color:#8b659c!important;border-top:2px dashed #dfc38b!important}
+/* Storybook parchment question modal */
+#m.question-modal{background:rgba(22,45,39,.60)!important;backdrop-filter:blur(7px)}
+#m.question-modal #mc.question-card{position:relative;isolation:isolate;overflow:auto;width:min(620px,100%);max-height:92dvh;padding:clamp(16px,4vw,25px)!important;border:5px solid #f6d58c!important;border-radius:30px!important;background:linear-gradient(155deg,#fffdf1 0%,#ffedc9 58%,#fff7e8 100%)!important;box-shadow:0 0 0 3px #fff8dc inset,0 12px 0 #b77b37,0 22px 55px rgba(0,0,0,.28)!important;color:#533d2c!important}
+#m.question-modal #mc.question-card:before{content:'🌿';position:absolute;top:7px;left:12px;font-size:25px;opacity:.85;pointer-events:none}
+#m.question-modal #mc.question-card:after{content:'🌸';position:absolute;right:12px;bottom:5px;font-size:25px;opacity:.85;pointer-events:none}
+.question-panel{gap:12px}
+.question-topline{padding-top:8px}
+.question-stage,.question-count{background:linear-gradient(180deg,#fff5d8,#f8dca0)!important;border:1px solid #e7c276;color:#704b20!important;box-shadow:0 2px 0 #e4c17c;font-size:clamp(11px,2.8vw,13px)}
+.question-progress{height:10px;background:#ead8b6!important;border:1px solid #e1c48b}
+.question-progress span{background:linear-gradient(90deg,#4cae49,#9cda57,#f3c45d)!important}
+.question-title{border:2px solid #edcf8c!important;border-radius:20px!important;background:linear-gradient(135deg,#fffef6,#fff0d3)!important;color:#70429a!important;text-align:center;padding:15px 13px!important;font-weight:900!important;box-shadow:0 4px 0 #ebd5a5}
+.answer-option{border:2px solid #e8d2a2!important;border-radius:16px!important;background:linear-gradient(180deg,#fffefa,#fff1d6)!important;color:#4f3d2d!important;box-shadow:0 4px 0 #d9bd88!important;font-weight:700}
+.answer-option:active{transform:translateY(2px)}
+.question-match-row{grid-template-columns:minmax(0,1fr) minmax(120px,42%);border:1px solid #ecd29d!important;border-radius:15px!important;background:rgba(255,255,255,.72)!important}
+.question-match-label{color:#59452f!important;font-weight:700}
+.question-match-row select{border:2px solid #e2c58e!important;border-radius:13px!important;background:#fffdf7!important;color:#533b2a!important}
+.question-check,.question-panel .go{background:linear-gradient(180deg,#5acb38,#258d2c)!important;border:2px solid #e8ffd2!important;box-shadow:0 5px 0 #176b25!important;border-radius:18px!important;color:#fff!important;font-weight:900}
+.question-exit{border:2px solid #ead4d9!important;background:linear-gradient(180deg,#fff,#fae9ec)!important;color:#795365!important;border-radius:15px!important;box-shadow:0 3px 0 #ddc2cc!important}
+@media(max-width:600px) and (orientation:portrait){
+ #app{height:100dvh;overflow-y:auto!important;overflow-x:hidden!important;display:flex;flex-direction:column;gap:5px;padding:7px 8px max(12px,env(safe-area-inset-bottom))!important;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+ #app>h1{font-size:clamp(16px,4.6vw,21px);margin:2px 0 4px}
+ .hud{gap:6px;margin:0 0 4px}
+ .hud span{padding:7px 3px;font-size:clamp(11px,3vw,14px)}
+ #cv{width:100%;height:auto;max-height:none;aspect-ratio:16/9;flex:0 0 auto}
+ .tw{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:7px 0;padding:8px}
+ .tw button.tower-choice{min-height:82px}
+ .actionbar{grid-template-columns:1.2fr .8fr .9fr;gap:6px;padding:6px;margin:3px 0}
+ .actionbar button{min-height:46px;font-size:clamp(10px,3vw,13px);padding:7px 3px}
+ .soundbar{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:2px 0}
+ .soundbar button{min-height:38px}
+ .game-credit{font-size:10px;margin:3px 0 5px;padding:6px 0}
+ #m.question-modal{align-items:flex-start;padding: max(12px,env(safe-area-inset-top)) 9px max(14px,env(safe-area-inset-bottom))}
+ #m.question-modal #mc.question-card{max-height:calc(100dvh - 26px - env(safe-area-inset-top) - env(safe-area-inset-bottom));border-radius:24px!important;padding:18px 13px!important}
+ .question-match-row{grid-template-columns:minmax(0,1fr) minmax(112px,42%);gap:7px;padding:8px}
+ .question-match-label{font-size:clamp(12px,3.4vw,14px)}
+ .question-match-row select{font-size:12px;padding:8px 5px}
+ .answer-option{font-size:13px;min-height:48px}
+}
+
 </style></head><body><div id="app">
 <h1>🌍 Kingdom Defense by KRUPOY</h1>
 <div class="hud"><span id="hl">❤️ 10</span><span id="hc">🪙 60</span><span id="hw">ข้อ 1/10</span></div>
@@ -644,7 +706,7 @@ const KD=[
 {k:'Plantae',e:'🌿',n:'Plantae พืช',q:Lq,tw:[['🌿','เฟิร์น'],['🍃','มอส (ชะลอ)'],['🌸','พืชดอก (แรง)']],sum:[['🧬','ลักษณะร่วม','เอมบริโอ เซลลูโลส ผู้ผลิต'],['🍃','ไบรโอไฟต์','ไม่มีท่อลำเลียง แกมีโทไฟต์เด่น'],['🌿','เฟิร์น','มีท่อลำเลียง ไม่มีเมล็ด'],['🌲','เมล็ดเปลือย','ไม่มีรังไข่ ไม่มีผล'],['🌸','พืชดอก','ออวุลในรังไข่ มีผล']]},
 {k:'Animalia',e:'🐬',n:'Animalia สัตว์',q:Aq,tw:[['🐙','มอลลัสก์'],['🪼','แมงกะพรุน (ชะลอ)'],['🐬','โลมา (แรง)']],sum:[['🍽️','ผู้บริโภค','ไม่มีผนังเซลล์'],['🪼','ไนดาเรียน','2 ชั้น สมมาตรรัศมี'],['🪱','หนอน','แบนไม่มีโพรง กลมโพรงเทียม แอนเนลิดโพรงแท้'],['🐙','มอลลัสก์','โพรงลำตัวแท้ ปมประสาทใหญ่'],['🦀','อาร์โทรพอด','แมลง 6 ขา'],['🐬','คอร์เดต','โนโทคอร์ด มีกระดูกสันหลัง']]}];
 const ALL=[['เซลล์','โพรแคริโอต','ยูแคริโอต','ยูแคริโอต','ยูแคริโอต','ยูแคริโอต'],['ผนังเซลล์','เพปทิโดไกลแคน','ไม่มี/มีในสาหร่าย','ไคติน','เซลลูโลส','ไม่มี'],['ดำรงชีวิต','ผู้ผลิต/ย่อยสลาย/ปรสิต','ผู้ผลิต/ผู้บริโภค/ย่อยสลาย','ย่อยสลาย/ปรสิต','ผู้ผลิต','ผู้บริโภค'],['เนื้อเยื่อ/เอมบริโอ','ไม่มี','ไม่มี','ไม่มี','มี','มี']];
-const tb=()=>{$('#tw').innerHTML=TT.map((t,i)=>`<button data-i="${i}">${t.e} ${t.n}<br>🪙${t.c}</button>`).join('')};
+const tb=()=>{$('#tw').innerHTML=TT.map((t,i)=>`<button class="tower-choice" data-i="${i}"><span class="tower-emoji">${t.e}</span><span class="tower-name">${t.n}</span><span class="tower-price">🪙 ${t.c}</span></button>`).join('')};
 function summary(i){clearLevelScreen();const d=KD[i];let h;if(i=='all')h=`<h3>🗺️ สรุปภาพรวม 5 อาณาจักร</h3><div style="overflow-x:auto"><table class="tb"><tr><th></th>${KD.map(x=>`<th>${x.e}<br>${x.k}</th>`).join('')}</tr>${ALL.map(r=>`<tr><th>${r[0]}</th>${r.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;else h=`<h3>${d.e} สรุป ${d.k}</h3><div class="gr">${d.sum.map(s=>`<div class="sc"><div class="em">${s[0]}</div><b>${s[1]}</b><div>${s[2]}</div></div>`).join('')}</div>`;show(h+'<button class="go" id="bk">← กลับ</button>');$('#bk').onclick=intro}
 function play(i){clearLevelScreen();K=i;Q=KD[i].q;TT.forEach((t,j)=>{t.e=KD[i].tw[j][0];t.n=KD[i].tw[j][1]});reset();S.in=1;tb();hud();sel();ask()}
 function clearLevelScreen(){
@@ -843,6 +905,7 @@ const cv=$('#cv'),ctx=cv.getContext('2d'),G=40,W=16,H=9;cv.width=W*G;cv.height=H
 // V2 artwork loader: keeps the original game mechanics and falls back to Canvas drawings if an image is unavailable.
 const ART={
   castle:'environment/castle.png',
+  environment:{grass:'environment/grass-tile.png',treeRound:'environment/tree-round.png',treePine:'environment/tree-pine.png',treeBlossom:'environment/tree-blossom.png',crystal:'environment/crystal.png',waterfall:'environment/waterfall.png'},
   towers:[
     'towers/archer-tower.png',
     'towers/magic-tower.png',
@@ -868,6 +931,7 @@ function loadArt(key,src){
   const img=new Image();img.onload=()=>{ART_IMG[key]=img};img.onerror=()=>console.warn('Asset not found:',src);img.src=src;
 }
 loadArt('castle',ART.castle);
+Object.entries(ART.environment).forEach(([key,src])=>loadArt(key,src));
 ART.towers.forEach((src,i)=>loadArt('tower'+i,src));
 ART.enemies.forEach((src,i)=>loadArt('enemy'+i,src));
 loadArt('boss',ART.boss);
@@ -941,8 +1005,17 @@ if(S)draw();requestAnimationFrame(loop)}
 function draw(){
  const now=performance.now()/1000;
  const bg=ctx.createLinearGradient(0,0,cv.width,cv.height);
- bg.addColorStop(0,'#d8f0d0');bg.addColorStop(.55,'#b9e2c2');bg.addColorStop(1,'#a8d8c7');
+ bg.addColorStop(0,'#b9e99a');bg.addColorStop(.48,'#8fd47e');bg.addColorStop(1,'#6fc18a');
  ctx.fillStyle=bg;ctx.fillRect(0,0,cv.width,cv.height);
+ // Seamless fantasy grass texture, with a soft sunlit vignette.
+ const grass=ART_IMG.grass;
+ if(grass&&grass.complete&&grass.naturalWidth){const pat=ctx.createPattern(grass,'repeat');if(pat){ctx.save();ctx.globalAlpha=.30;ctx.fillStyle=pat;ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();}}
+ const glow=ctx.createRadialGradient(cv.width*.48,cv.height*.42,18,cv.width*.48,cv.height*.42,cv.width*.72);
+ glow.addColorStop(0,'rgba(255,255,190,.16)');glow.addColorStop(1,'rgba(21,87,39,.10)');ctx.fillStyle=glow;ctx.fillRect(0,0,cv.width,cv.height);
+ // Forest border decorations stay outside the main path and tower lanes.
+ const forest=[['treeRound',22,24,58,70],['treePine',145,8,50,66],['treeBlossom',280,8,55,68],['treeRound',475,10,60,72],['treePine',610,26,52,70],['treeBlossom',20,318,58,72],['treeRound',165,326,56,68],['treePine',420,324,54,70],['treeBlossom',610,315,58,72]];
+ forest.forEach(([key,x,y,w,h])=>{if(!drawSprite(key,x,y,w,h)){ctx.fillStyle='rgba(32,105,55,.18)';ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.fill();}});
+ if(drawSprite('crystal',cv.width-52,cv.height*.53,36,42)){};
  // Soft grass texture and tiny flowers
  for(let y=14;y<H*G;y+=42)for(let x=12;x<W*G;x+=47){
   if(!pc.has(Math.floor(x/G)+','+Math.floor(y/G))){
@@ -952,14 +1025,16 @@ function draw(){
  // Path with a dark edge, warm center and dashed highlights
  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
- ctx.strokeStyle='rgba(137,119,101,.20)';ctx.lineWidth=G*.88;ctx.stroke();
- ctx.strokeStyle='#d8b98f';ctx.lineWidth=G*.72;ctx.stroke();
- ctx.strokeStyle='#f3ddb5';ctx.lineWidth=G*.56;ctx.stroke();
- ctx.setLineDash([5,10]);ctx.strokeStyle='rgba(255,248,213,.48)';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);
+ ctx.strokeStyle='rgba(103,74,38,.28)';ctx.lineWidth=G*.91;ctx.stroke();
+ ctx.strokeStyle='#d7a95d';ctx.lineWidth=G*.76;ctx.stroke();
+ ctx.strokeStyle='#ffe5a0';ctx.lineWidth=G*.62;ctx.stroke();
+ ctx.strokeStyle='#fff0c8';ctx.lineWidth=G*.52;ctx.stroke();
+ ctx.setLineDash([8,12]);ctx.strokeStyle='rgba(255,255,255,.48)';ctx.lineWidth=2.5;ctx.stroke();ctx.setLineDash([]);
  ctx.restore();
  // Start and finish markers
  ctx.font='23px serif';ctx.textAlign='center';ctx.textBaseline='middle';
  ctx.fillText('🚪',pts[0][0],pts[0][1]-17);
+ if(!drawSprite('princess',pts[0][0]+30,pts[0][1]+30,58,62)){ctx.font='27px serif';ctx.fillText('👸',pts[0][0]+30,pts[0][1]+25);}
  if(!drawSprite('castle',pts[pts.length-1][0],pts[pts.length-1][1]-15,54,54))ctx.fillText('🏰',pts[pts.length-1][0],pts[pts.length-1][1]-18);
  // Tower pads and V2 tower sprites (fallback to the original icons if a PNG is missing)
  S.tw.forEach(t=>{

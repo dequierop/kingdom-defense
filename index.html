@@ -625,6 +625,76 @@ body{background:radial-gradient(ellipse at 50% 0%,#e7fbff 0%,transparent 34%),li
 }
 
 
+/* ===== Desktop + landscape iPad: battlefield with side controls ===== */
+@media (min-width:900px) and (orientation:landscape){
+  #app{
+    width:min(100%, 1440px)!important;
+    max-width:1440px!important;
+    min-height:100dvh;
+    box-sizing:border-box;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(270px,340px);
+    grid-template-rows:auto auto minmax(0,1fr) auto;
+    grid-template-areas:
+      "title title"
+      "hud hud"
+      "board controls"
+      "credit sound";
+    align-items:center;
+    column-gap:clamp(14px,2vw,28px);
+    row-gap:8px;
+    padding:10px clamp(12px,2vw,28px) 12px!important;
+  }
+  #app>h1{grid-area:title;margin:2px 0;text-align:center}
+  #app>.hud{grid-area:hud;width:100%;margin:0}
+  #cv{
+    grid-area:board;
+    justify-self:center;align-self:center;
+    width:auto!important;
+    height:min(72dvh,760px)!important;
+    max-width:100%!important;max-height:760px!important;
+    aspect-ratio:3/4!important;object-fit:fill!important;
+    margin:0!important;
+  }
+  .control-panel{
+    grid-area:controls;width:100%;box-sizing:border-box;
+    display:flex;flex-direction:column;gap:12px;
+    align-self:center;justify-self:stretch;
+    padding:14px;border:3px solid #fff1ca;border-radius:22px;
+    background:linear-gradient(180deg,#fff3d4,#f7d99c);
+    box-shadow:0 5px 0 #d7aa61,0 8px 18px rgba(100,66,29,.12);
+  }
+  .control-panel .tw{
+    display:grid;grid-template-columns:1fr;gap:9px;
+    margin:0;padding:0;border:0;background:transparent;box-shadow:none;
+  }
+  .control-panel .tw:before{font-size:clamp(15px,1.4vw,19px);margin-bottom:3px}
+  .control-panel .tw button.tower-choice{
+    min-height:76px;width:100%;display:grid;
+    grid-template-columns:54px minmax(0,1fr) auto;
+    grid-template-rows:1fr;align-items:center;justify-items:center;
+    gap:8px;padding:8px 12px;border-radius:16px!important;
+  }
+  .control-panel .tower-emoji{font-size:32px}
+  .control-panel .tower-name{font-size:clamp(12px,1.15vw,15px);text-align:center}
+  .control-panel .tower-price{font-size:13px;white-space:nowrap}
+  .control-panel #msg{min-height:24px;padding:2px 4px;font-size:12px;text-align:center}
+  .control-panel .actionbar{
+    display:grid;grid-template-columns:1fr 1fr;grid-template-areas:'go go' 'speed menu';
+    gap:9px;margin:0;padding:0;border:0;background:transparent;box-shadow:none;
+  }
+  .control-panel .actionbar #go{
+    grid-area:go;width:100%;min-height:58px;padding:10px;
+    font-size:clamp(16px,1.5vw,20px);border-radius:16px!important;
+  }
+  .control-panel .actionbar #speed{grid-area:speed;min-width:0;min-height:48px;padding:8px 5px;font-size:14px}
+  .control-panel .actionbar #mn{grid-area:menu;min-width:0;min-height:48px;padding:8px 5px;font-size:14px}
+  .soundbar{grid-area:sound;display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin:0}
+  .soundbar button{min-height:40px;padding:7px 5px;font-size:12px}
+  .game-credit{grid-area:credit;align-self:center;margin:0;text-align:center}
+}
+
+
 /* ===== Mobile one-screen gameplay controls ===== */
 @media(max-width:600px) and (orientation:portrait){
  html,body{height:100%;overflow:hidden;overscroll-behavior:none}

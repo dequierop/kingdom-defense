@@ -947,8 +947,9 @@ let W=16,H=9,BOARD_W=W*G,BOARD_H=H*G,portraitBoard=false;
 let wp=[],pc=new Set(),pts=[];
 function buildRoute(){
   if(portraitBoard){
-    // Route follows the winding road painted into the supplied portrait battlefield.
-    wp=[[28,602],[530,602],[530,514],[83,514],[83,304],[497,304],[497,197],[28,197]];
+    // Follow EVERY bend of the painted road, from the upper-left entrance
+    // to the lower-right exit. The intermediate turns prevent diagonal shortcuts.
+    wp=[[28,197],[530,197],[530,304],[83,304],[83,415],[530,415],[530,550],[28,550],[28,602],[530,602]];
     pts=wp.map(p=>p.slice());
     pc=new Set();
     // Mark every placement cell whose center overlaps the painted road.

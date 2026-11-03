@@ -471,6 +471,43 @@ button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
  .question-match-row select{min-height:34px;padding:5px}
 }
 
+
+
+/* ===== Report page: reliable full-page scrolling on iOS / mobile ===== */
+#m.report-modal{
+ position:fixed;inset:0;display:flex;align-items:flex-start;justify-content:center;
+ overflow-x:hidden;overflow-y:auto;
+ height:100%;max-height:100dvh;box-sizing:border-box;
+ padding:max(14px,env(safe-area-inset-top)) 12px max(24px,env(safe-area-inset-bottom));
+ -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;
+}
+#m.report-modal #mc{
+ width:min(760px,100%);max-width:760px;
+ height:auto;min-height:0;max-height:none;overflow:visible;
+ flex:0 0 auto;margin:0 auto;
+ border-radius:22px;
+}
+#m.report-modal .report-card{width:100%;box-sizing:border-box}
+#m.report-modal .report-actions{padding-bottom:4px}
+@media(max-width:600px) and (orientation:portrait){
+ #m.report-modal{align-items:flex-start;justify-content:center;padding:12px 8px max(28px,env(safe-area-inset-bottom))}
+ #m.report-modal #mc{width:100%;max-width:520px;padding:14px 12px;max-height:none;overflow:visible;border-radius:18px}
+ #m.report-modal #mc>h3{font-size:18px;line-height:1.4;margin:2px 0 8px}
+ #m.report-modal #mc>p{font-size:13px;line-height:1.55;margin:5px 0 10px}
+ #m.report-modal .report-card{padding:14px 11px;border-radius:17px}
+ #m.report-modal .report-head .badge-icon{font-size:34px}
+ #m.report-modal .report-head h2{font-size:19px;line-height:1.35}
+ #m.report-modal .report-meta{gap:6px}
+ #m.report-modal .report-chip{font-size:11px;padding:6px 9px}
+ #m.report-modal .report-grid{grid-template-columns:1fr;gap:8px;margin:10px 0}
+ #m.report-modal .report-item{padding:10px 11px}
+ #m.report-modal .report-total{padding:11px;margin-top:9px}
+ #m.report-modal .report-total strong{font-size:23px}
+ #m.report-modal .report-actions{display:grid;grid-template-columns:1fr;gap:8px}
+ #m.report-modal .report-actions button{width:100%;min-height:44px}
+ #m.report-modal #backReport{width:100%;min-height:44px;margin-top:8px}
+}
+
 </style></head><body><div id="app">
 <h1>🌍 Kingdom Defense by KRUPOY</h1>
 <div class="hud"><span id="hl">❤️ 10</span><span id="hc">🪙 60</span><span id="hw">ข้อ 1/10</span></div>
@@ -855,9 +892,12 @@ if(pc.has(x+','+y))return say('วางบนทางเดินไม่ไ�
 S.coins-=t.c;S.tw.push({x,y,t,cd:0});hud()};
 function show(h){
  const isQuestion=h.includes('class="question-panel"');
+ const isReport=h.includes('id="reportCapture"');
  if(!isQuestion){$('#mc').classList.remove('question-card');$('#m').classList.remove('question-modal')}
+ $('#m').classList.toggle('report-modal',isReport);
  $('#mc').innerHTML=h+(S&&S.in?'<button id="ex" class="question-exit">✕ ออกจากด่าน</button>':'');
- $('#m').style.display='flex';const x=$('#ex');if(x)x.onclick=leave;
+ $('#m').style.display='flex';
+ const x=$('#ex');if(x)x.onclick=leave;
 }
 function hide(){$('#m').style.display='none'}
 function intro0(){reset();hud();sel();$('#go').disabled=true;show(`<h3>🍄 ด่านอาณาจักร Fungi</h3><p>ไวรัสกำลังบุกเข้ามา! เริ่มต้นได้รับทุน 40 เหรียญ ตอบคำถามให้ถูกและกำจัดไวรัสเพื่อรับเหรียญไปซื้อป้อมช่วยป้องกันอาณาจักร (เหรียญจากการกำจัดไวรัสใช้ซื้อป้อมเท่านั้น ไม่เพิ่มคะแนนหรือดาว) ทั้งหมด 10 ข้อ 10 เวฟ ด่าน 7 มีบอส 5 ตัว และด่าน 10 มีบอส 8 ตัว<br>ตอบผิด = ศัตรูเร็วขึ้น</p><button class="go" id="st">เริ่มเกม ▶</button>`);$('#st').onclick=ask}

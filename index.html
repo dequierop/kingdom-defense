@@ -429,6 +429,16 @@ button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
  .game-credit{font-size:9px;margin:0;padding:3px 0 0;flex:0 0 auto}
 }
 
+
+/* Coin-powered learning helpers: available from Protista onward. */
+.helper-shop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:2px 0 4px;padding:9px;border:1px solid #e8d8ee;border-radius:16px;background:linear-gradient(135deg,#fff9e8,#f8efff)}
+.helper-shop-title{grid-column:1/-1;color:#79549a;font-weight:900;font-size:13px;margin-bottom:0}
+.helper-btn{min-width:0;padding:8px 5px;border-radius:13px;background:linear-gradient(180deg,#fff,#f6edff);border:1px solid #e5d5ee;box-shadow:0 3px 0 #e5d8ed;color:#59436f;font-size:12px;font-weight:800;line-height:1.3}
+.helper-btn small{display:block;color:#a16c22;font-size:11px;font-weight:900;margin-top:3px}
+.helper-btn.used{opacity:.55;background:#eee9f2;box-shadow:none}
+.helper-note{padding:9px 11px;border-radius:12px;background:#fff5d9;border:1px solid #f0d99a;color:#735326;font-size:13px;line-height:1.5}
+@media(max-width:420px){.helper-shop{gap:5px;padding:7px}.helper-btn{font-size:11px;padding:7px 3px}.helper-btn small{font-size:10px}}
+
 /* Quiz modal: parchment quest card, responsive matching rows and clear feedback. */
 #m.question-modal{align-items:center;justify-content:center;padding:12px;background:rgba(44,32,60,.56);backdrop-filter:blur(8px)}
 #mc.question-card{width:min(620px,100%);max-width:620px;max-height:92dvh;overflow:auto;padding:clamp(16px,3vw,24px);border:3px solid #fff3d5;border-radius:24px;background:linear-gradient(155deg,#fffdf5,#fff0d8 58%,#f4eaff);box-shadow:0 16px 48px rgba(70,43,85,.28);color:#4d3b62}
@@ -1105,14 +1115,16 @@ function show(h){
 }
 function hide(){$('#m').style.display='none'}
 function intro0(){reset();hud();sel();$('#go').disabled=true;show(`<h3>🍄 ด่านอาณาจักร Fungi</h3><p>ไวรัสกำลังบุกเข้ามา! เริ่มต้นได้รับทุน 40 เหรียญ ตอบคำถามให้ถูกและกำจัดไวรัสเพื่อรับเหรียญไปซื้อป้อมช่วยป้องกันอาณาจักร (เหรียญจากการกำจัดไวรัสใช้ซื้อป้อมเท่านั้น ไม่เพิ่มคะแนนหรือดาว) ทั้งหมด 10 ข้อ 10 เวฟ ด่าน 7 มีบอส 5 ตัว และด่าน 10 มีบอส 8 ตัว<br>ตอบผิด = ศัตรูเร็วขึ้น</p><button class="go" id="st">เริ่มเกม ▶</button>`);$('#st').onclick=ask}
-function ask(){const q=Q[S.wave];S.ans=0;
+function ask(){const q=Q[S.wave];S.ans=0;S.helperUsed={hint:false,cut:false,review:false};
  $('#mc').classList.add('question-card');$('#m').classList.add('question-modal');
  show(`<section class="question-panel">
   <div class="question-topline"><span class="question-stage">${KD[K].e} ${KD[K].k}</span><span class="question-count">${isB(S.wave)?'👑 บอส · ':''}ข้อ ${S.wave+1}/10</span></div>
   <div class="question-progress"><span style="width:${(S.wave+1)*10}%"></span></div>
   <h3 class="question-title">${q.q}</h3>
+  ${K>=1?`<div class="helper-shop"><div class="helper-shop-title">✨ ร้านตัวช่วย · ใช้เหรียญแลก</div><button type="button" class="helper-btn" id="helpHint">💡 คำใบ้<small>🪙 5 เหรียญ</small></button><button type="button" class="helper-btn" id="helpCut" ${q.t==='mc'?'':'disabled'}>✂️ ตัดตัวเลือก<small>🪙 10 เหรียญ</small></button><button type="button" class="helper-btn" id="helpReview">📖 ทบทวน<small>🪙 15 เหรียญ</small></button></div><div id="helperNote" class="helper-note" hidden></div>`:''}
   <div id="bd" class="question-body"></div><div id="fb" class="question-feedback"></div>
  </section>`);const b=$('#bd');
+ if(K>=1)bindQuestionHelpers(q);
  if(q.t=='mc')sh(q.o.map((t,i)=>[t,i==q.a])).forEach(([t,ok])=>{const x=document.createElement('button');x.className='opt answer-option';x.innerHTML=t;x.onclick=()=>done(ok,ok?'':'<br>เฉลย: '+q.o[q.a]);b.append(x)});
  else if(q.t=='assign'){q.i.forEach(t=>{const r=document.createElement('div');r.className='question-match-row';
  const optionOrder=sh(q.o.map((o,j)=>j));
@@ -1122,6 +1134,37 @@ function ask(){const q=Q[S.wave];S.ans=0;
  sh(q.i).forEach(t=>{const x=document.createElement('button');x.textContent=t;x.onclick=()=>{x.disabled=true;pk.push(t);ln.textContent='ลำดับของคุณ: '+pk.join(' → ');if(pk.length==q.i.length){const ok=pk.every((v,i)=>v==q.i[i]);done(ok,ok?'':'<br>ลำดับที่ถูก: '+q.i.join(' → '))}};ch.append(x)});
  const r=document.createElement('button');r.textContent='↺ ล้าง';r.className='question-clear';r.onclick=ask;b.append(r)}
 }
+function bindQuestionHelpers(q){
+ const prices={hint:5,cut:10,review:15};
+ const note=$('#helperNote');
+ const use=(kind,content)=>{
+  if(S.ans)return;
+  if(S.helperUsed[kind])return;
+  const cost=prices[kind];
+  if(S.coins<cost){say2(`เหรียญไม่พอ ต้องมี ${cost} เหรียญจึงใช้ตัวช่วยนี้ได้`);return;}
+  S.coins-=cost;S.helperUsed[kind]=true;hud();
+  const btn=$('#help'+kind[0].toUpperCase()+kind.slice(1));
+  if(btn){btn.classList.add('used');btn.disabled=true;}
+  note.hidden=false;note.textContent=content;
+ };
+ $('#helpHint')?.addEventListener('click',()=>{
+  const hints={mc:'คำใบ้: อ่านคำสำคัญในโจทย์ แล้วเทียบกับลักษณะเด่นของแต่ละตัวเลือก',assign:'คำใบ้: จับคู่จากลักษณะเฉพาะหรือคำสำคัญของแต่ละกลุ่มก่อน',order:'คำใบ้: พิจารณาความสัมพันธ์ก่อน–หลัง หรือจากลำดับพื้นฐานไปสู่ขั้นที่ซับซ้อนกว่า'};
+  use('hint',hints[q.t]||'คำใบ้: ค่อย ๆ แยกข้อมูลในโจทย์เป็นประเด็น แล้วพิจารณาทีละส่วน');
+ });
+ $('#helpCut')?.addEventListener('click',()=>{
+  if(q.t!=='mc')return;
+  if(S.coins<prices.cut){say2('เหรียญไม่พอ ต้องมี 10 เหรียญจึงใช้ตัวช่วยนี้ได้');return;}
+  const wrong=[...q.o.keys()].filter(i=>i!==q.a);
+  // Remove two incorrect choices while always preserving the correct answer.
+  for(const i of sh(wrong).slice(0,2)){
+   const option=$$('#bd .answer-option')[i];
+   if(option){option.disabled=true;option.classList.add('helper-removed');option.style.opacity='.28';option.style.textDecoration='line-through';option.textContent='ตัดตัวเลือกนี้แล้ว';}
+  }
+  use('cut','ตัดตัวเลือกที่ไม่ถูกต้องออกแล้ว 2 ข้อ ลองพิจารณาตัวเลือกที่เหลือ');
+ });
+ $('#helpReview')?.addEventListener('click',()=>use('review','📖 ทบทวนความรู้: '+q.ex));
+}
+function $$(selector){return [...document.querySelectorAll(selector)]}
 function say2(t){$('#fb').innerHTML='<p class="r">'+t+'</p>'}
 function done(ok,ex){if(S.ans)return;S.ans=1;if(ok)AudioFX.success();else AudioFX.error();S.res[S.wave]=ok;const q=Q[S.wave],rw=isB(S.wave)?60:30;
 if(ok){S.correct++;S.coins+=rw}else S.speed=Math.min(1.6,S.speed+.1);

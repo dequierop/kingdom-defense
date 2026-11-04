@@ -432,7 +432,7 @@ button:active:not(:disabled){filter:brightness(1.035) saturate(1.12)}
 
 /* Coin-powered learning helpers: available from Protista onward. */
 .helper-shop{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:2px 0 4px;padding:9px;border:1px solid #e8d8ee;border-radius:16px;background:linear-gradient(135deg,#fff9e8,#f8efff)}
-.helper-shop-title{grid-column:1/-1;color:#79549a;font-weight:900;font-size:13px;margin-bottom:0}
+.helper-shop-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#79549a;font-weight:900;font-size:13px;margin-bottom:0}.helper-coin-balance{flex:0 0 auto;padding:5px 10px;border-radius:999px;background:linear-gradient(180deg,#fff2bd,#ffd66e);border:1px solid #e9bd4e;color:#704b12;font-size:12px;font-weight:1000;box-shadow:0 2px 0 #e7c36c;white-space:nowrap}.helper-coin-balance strong{font-variant-numeric:tabular-nums}
 .helper-btn{min-width:0;padding:8px 5px;border-radius:13px;background:linear-gradient(180deg,#fff,#f6edff);border:1px solid #e5d5ee;box-shadow:0 3px 0 #e5d8ed;color:#59436f;font-size:12px;font-weight:800;line-height:1.3}
 .helper-btn small{display:block;color:#a16c22;font-size:11px;font-weight:900;margin-top:3px}
 .helper-btn.used{opacity:.55;background:#eee9f2;box-shadow:none}
@@ -1121,7 +1121,7 @@ function ask(){const q=Q[S.wave];S.ans=0;S.helperUsed={hint:false,cut:false,revi
   <div class="question-topline"><span class="question-stage">${KD[K].e} ${KD[K].k}</span><span class="question-count">${isB(S.wave)?'👑 บอส · ':''}ข้อ ${S.wave+1}/10</span></div>
   <div class="question-progress"><span style="width:${(S.wave+1)*10}%"></span></div>
   <h3 class="question-title">${q.q}</h3>
-  ${K>=1?`<div class="helper-shop"><div class="helper-shop-title">✨ ร้านตัวช่วย · ใช้เหรียญแลก</div><button type="button" class="helper-btn" id="helpHint">💡 คำใบ้<small>🪙 5 เหรียญ</small></button><button type="button" class="helper-btn" id="helpCut" ${q.t==='mc'?'':'disabled'}>✂️ ตัดตัวเลือก<small>🪙 10 เหรียญ</small></button><button type="button" class="helper-btn" id="helpReview">📖 ทบทวน<small>🪙 15 เหรียญ</small></button></div><div id="helperNote" class="helper-note" hidden></div>`:''}
+  ${K>=1?`<div class="helper-shop"><div class="helper-shop-title"><span>✨ ร้านตัวช่วย · ใช้เหรียญแลก</span><span class="helper-coin-balance" id="helperCoinBalance">🪙 คงเหลือ <strong>${S.coins}</strong></span></div><button type="button" class="helper-btn" id="helpHint">💡 คำใบ้<small>🪙 5 เหรียญ</small></button><button type="button" class="helper-btn" id="helpCut" ${q.t==='mc'?'':'disabled'}>✂️ ตัดตัวเลือก<small>🪙 10 เหรียญ</small></button><button type="button" class="helper-btn" id="helpReview">📖 ทบทวน<small>🪙 15 เหรียญ</small></button></div><div id="helperNote" class="helper-note" hidden></div>`:''}
   <div id="bd" class="question-body"></div><div id="fb" class="question-feedback"></div>
  </section>`);const b=$('#bd');
  if(K>=1)bindQuestionHelpers(q);
@@ -1142,7 +1142,7 @@ function bindQuestionHelpers(q){
   if(S.helperUsed[kind])return;
   const cost=prices[kind];
   if(S.coins<cost){say2(`เหรียญไม่พอ ต้องมี ${cost} เหรียญจึงใช้ตัวช่วยนี้ได้`);return;}
-  S.coins-=cost;S.helperUsed[kind]=true;hud();
+  S.coins-=cost;S.helperUsed[kind]=true;hud();const balance=$('#helperCoinBalance');if(balance)balance.innerHTML=`🪙 คงเหลือ <strong>${S.coins}</strong>`;
   const btn=$('#help'+kind[0].toUpperCase()+kind.slice(1));
   if(btn){btn.classList.add('used');btn.disabled=true;}
   note.hidden=false;note.textContent=content;
